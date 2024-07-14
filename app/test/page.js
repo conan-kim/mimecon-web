@@ -27,11 +27,23 @@ const Page = () => {
     },
     {
       name: "testUrl",
-      url: "https://weloop.s3.amazonaws.com/user_1720520124230-5a46677d-9460-4400-b473-565ed0233e6d/1720520339040549/1720520339040549.m3u8",
+      url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8",
     },
     {
-      name: "testUrl2",
-      url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8",
+      name: "tear of steel",
+      url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+    },
+    {
+      name: "fMP4 m3u8",
+      url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8",
+    },
+    {
+      name: "MP4 m3u8",
+      url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.mp4/.m3u8",
+    },
+    {
+      name: "Live Akami m3u8",
+      url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
     },
   ];
 
