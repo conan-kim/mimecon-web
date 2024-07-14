@@ -2,6 +2,7 @@
 import { useState } from "react";
 import VideoPlayer from "../../src/component/videoPlayer";
 import ConanReactHlsPlayer from "../../src/component/connanReactHlsPlayer";
+import ConanReactPlayer from "../../src/component/conanReactPlayer";
 
 const Page = () => {
   const [index, setIndex] = useState(0);
@@ -75,6 +76,10 @@ const Page = () => {
         <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">react-hls-player</div>
           <ConanReactHlsPlayer src={videoUrls[index].url} />
+        </div>
+        <div className="flex flex-1 flex-col gap-2 p-[16px]">
+          <div className="font-bold">react-player</div>
+          <ConanReactPlayer src={videoUrls[index].url} />
         </div>
       </div>
     </div>
