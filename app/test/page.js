@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import VideoPlayer from "../../src/component/videoPlayer";
+import ConanReactHlsPlayer from "../../src/component/connanReactHlsPlayer";
 
 const Page = () => {
   const [index, setIndex] = useState(0);
@@ -66,7 +67,16 @@ const Page = () => {
           );
         })}
       </div>
-      <VideoPlayer src={videoUrls[index].url} type="m3u8" />
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-1 flex-col gap-2 p-[16px]">
+          <div className="font-bold">HLS.js</div>
+          <VideoPlayer src={videoUrls[index].url} type="m3u8" />
+        </div>
+        <div className="flex flex-1 flex-col gap-2 p-[16px]">
+          <div className="font-bold">react-hls-player</div>
+          <ConanReactHlsPlayer src={videoUrls[index].url} />
+        </div>
+      </div>
     </div>
   );
 };
