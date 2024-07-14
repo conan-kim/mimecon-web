@@ -73,10 +73,10 @@ const Page = () => {
           <div className="font-bold">HLS.js</div>
           <VideoPlayer src={videoUrls[index].url} type="m3u8" />
         </div>
-        <div className="flex flex-1 flex-col gap-2 p-[16px]">
+        {/* <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">react-hls-player</div>
           <ConanReactHlsPlayer src={videoUrls[index].url} />
-        </div>
+        </div> */}
         <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">react-player</div>
           <ConanReactPlayer src={videoUrls[index].url} />
