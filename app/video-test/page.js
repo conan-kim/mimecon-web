@@ -50,7 +50,8 @@ const Page = () => {
   ];
 
   return (
-    <div className="bg-transparent break-keep whitespace-pre max-w-screen-xl m-auto bg-blue-400 flex flex-1 min-h-screen flex-col">
+    <div className="bg-transparent break-keep whitespace-pre max-w-screen-xl m-auto bg-blue-400 flex flex-1 min-h-screen flex-col p-4">
+      <div className="font-bold text-[20px] py-[20px]">VIDEO PAGE</div>
       <div className={`bg-green-400 flex-row`}>
         {videoUrls.map((_video, _idx) => {
           const isSelected = index === _idx;
