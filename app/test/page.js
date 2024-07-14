@@ -42,6 +42,7 @@ const Page = () => {
           const isSelected = index === _idx;
           return (
             <div
+              key={`${_idx}${_video.url}`}
               className={`${isSelected ? "bg-yellow-400" : "bg-red-400"} p-2`}
               onClick={() => {
                 console.log("hello");
