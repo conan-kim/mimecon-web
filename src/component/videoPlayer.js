@@ -39,6 +39,8 @@ const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
       controls
       autoPlay
       playsinline
+      preload
+      webkit-playsinline
     />
   );
 };
