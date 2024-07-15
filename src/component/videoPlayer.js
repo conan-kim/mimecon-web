@@ -3,7 +3,15 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 
-const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
+const VideoPlayer = ({
+  src,
+  index,
+  setIndex,
+  videoUrls,
+  isAutoPlay,
+  type,
+  loop,
+}) => {
   const videoRef = useRef();
 
   useEffect(() => {
@@ -28,18 +36,24 @@ const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
     videoRef.current.addEventListener("ended", (event) => {
       if (!isAutoPlay) return;
       setIndex(index + 1 === videoUrls.length ? 0 : index + 1);
+      // videoRef.current.play();
     });
+
+    // videoRef.current.play();
   }, [src, type]);
 
   return (
     <video
       ref={videoRef}
-      width={400}
-      height={400}
+      // width={400}
+      // height={400}
+      className="w-full h-full"
       controls
       autoPlay
+      muted
       playsInline
       preload
+      loop
     />
   );
 };

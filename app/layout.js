@@ -8,7 +8,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="max-w-screen-md m-auto">{children}</body>
+      <body className="max-w-screen-md m-auto whitespace-pre">{children}</body>
     </html>
   );
 }

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Page = () => {
   return (
-    <div className="relative flex flex-1 flex-col max-w-screen-sm m-auto">
+    <div className="relative flex flex-1 flex-col">
       <div className="flex flex-col h-[100vh] bg-black items-center justify-start">
         <div className="w-full aspect-square">
           <Image
@@ -17,7 +17,7 @@ const Page = () => {
       </div>
       <div className="absolute flex flex-col bottom-0 left-0 right-0 items-center justify-center pb-[24px] gap-12">
         <div className="flex flex-col gap-0 items-center">
-          <LogoSvg />
+          <LogoSvg width={160} height={160} />
           <div className="flex flex-col text-white text-[40px] text-center leading-[40px]">
             <span className="font-thin">새로운 커뮤니케이션</span>
             <span className="font-bold">같이 미미콘 할래?</span>

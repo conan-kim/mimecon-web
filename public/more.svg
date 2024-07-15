@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+    <defs>
+        <filter id="5fnzu07oma" x="10" y="16" width="9" height="9" filterUnits="userSpaceOnUse">
+            <feOffset/>
+            <feGaussianBlur stdDeviation="1" result="blur"/>
+            <feFlood flood-opacity=".2"/>
+            <feComposite operator="in" in2="blur"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="3bnbsgcxrb" x="16" y="16" width="9" height="9" filterUnits="userSpaceOnUse">
+            <feOffset/>
+            <feGaussianBlur stdDeviation="1" result="blur-2"/>
+            <feFlood flood-opacity=".2"/>
+            <feComposite operator="in" in2="blur-2"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="zczsxhu47c" x="22" y="16" width="9" height="9" filterUnits="userSpaceOnUse">
+            <feOffset/>
+            <feGaussianBlur stdDeviation="1" result="blur-3"/>
+            <feFlood flood-opacity=".2"/>
+            <feComposite operator="in" in2="blur-3"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <path style="fill:none" d="M0 0h40v40H0z"/>
+    <g data-name="그룹 188746">
+        <g style="filter:url(#5fnzu07oma)">
+            <path data-name="패스 38638" d="M13.5 0A1.5 1.5 0 1 1 12 1.5 1.5 1.5 0 0 1 13.5 0" transform="rotate(180 14 11)" style="fill:#fff"/>
+        </g>
+        <g style="filter:url(#3bnbsgcxrb)">
+            <path data-name="패스 38639" d="M7.5 0A1.5 1.5 0 1 1 6 1.5 1.5 1.5 0 0 1 7.5 0" transform="rotate(180 14 11)" style="fill:#fff"/>
+        </g>
+        <g style="filter:url(#zczsxhu47c)">
+            <path data-name="패스 38640" d="M1.5 0A1.5 1.5 0 1 1 0 1.5 1.5 1.5 0 0 1 1.5 0" transform="rotate(180 14 11)" style="fill:#fff"/>
+        </g>
+    </g>
+</svg>

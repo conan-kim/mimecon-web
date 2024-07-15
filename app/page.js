@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const Page = () => {
@@ -16,6 +15,12 @@ const Page = () => {
         </Link>
         <Link href="download" className="cursor-pointer">
           다운로드 페이지
+        </Link>
+        <Link href="detail" className="cursor-pointer">
+          2-Depth 페이지
+        </Link>
+        <Link href="talk" className="cursor-pointer">
+          대화하기 페이지
         </Link>
       </div>
     </div>

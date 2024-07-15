@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <defs>
+        <linearGradient id="7ntucdbj8a" x2=".827" y2=".935" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#00ff94"/>
+            <stop offset="1" stop-color="#00e5ca"/>
+        </linearGradient>
+    </defs>
+    <g data-name="Iconly/Regular/Light/Voice">
+        <path data-name="합치기 25" d="M8.149 21.186v-2.445a8.868 8.868 0 0 1-5.526-2.6A8.962 8.962 0 0 1 0 9.777a.814.814 0 0 1 1.629 0 7.334 7.334 0 1 0 14.667 0 .816.816 0 0 1 1.631 0 8.958 8.958 0 0 1-2.627 6.364 8.866 8.866 0 0 1-5.524 2.6v2.445a.814.814 0 1 1-1.628 0zM4.01 9.742v-4.77a4.952 4.952 0 1 1 9.9 0v4.77a4.952 4.952 0 1 1-9.9 0z" transform="translate(7.037 4.999)" style="fill:url(#7ntucdbj8a)"/>
+    </g>
+    <path data-name="사각형 23308" style="fill:none" d="M0 0h32v32H0z"/>
+</svg>
