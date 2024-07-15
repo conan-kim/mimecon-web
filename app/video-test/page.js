@@ -6,6 +6,7 @@ import ConanReactPlayer from "../../src/component/conanReactPlayer";
 
 const Page = () => {
   const [index, setIndex] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
   const videoUrls = [
     {
       name: "introUrl",
@@ -49,10 +50,23 @@ const Page = () => {
     },
   ];
 
+  const toggleAutoPlay = () => {
+    setIsAutoPlay(!isAutoPlay);
+  };
+
   return (
-    <div className="bg-transparent break-keep whitespace-pre max-w-screen-xl m-auto bg-blue-400 flex flex-1 min-h-screen flex-col p-4">
+    <div className="bg-transparent break-keep whitespace-pre max-w-screen-xl m-auto bg-blue-400 flex flex-1 min-h-screen flex-col p-4 gap-4">
       <div className="font-bold text-[20px] py-[20px]">VIDEO PAGE</div>
-      <div className={`bg-green-400 flex-row`}>
+      <div className="flex flex-row gap-4 items-center justify-start">
+        <div>AutoPlay? {isAutoPlay ? "ON" : "OFF"}</div>
+        <div
+          className="border bg-gray-400 cursor-pointer p-2"
+          onClick={toggleAutoPlay}
+        >
+          toggle btn
+        </div>
+      </div>
+      <div>
         {videoUrls.map((_video, _idx) => {
           const isSelected = index === _idx;
           return (
@@ -72,7 +86,14 @@ const Page = () => {
       <div className="flex flex-row gap-4">
         <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">HLS.js</div>
-          <VideoPlayer src={videoUrls[index].url} type="m3u8" />
+          <VideoPlayer
+            src={videoUrls[index].url}
+            isAutoPlay={isAutoPlay}
+            index={index}
+            setIndex={setIndex}
+            videoUrls={videoUrls}
+            type="m3u8"
+          />
         </div>
         {/* <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">react-hls-player</div>
@@ -80,7 +101,13 @@ const Page = () => {
         </div> */}
         <div className="flex flex-1 flex-col gap-2 p-[16px]">
           <div className="font-bold">react-player</div>
-          <ConanReactPlayer src={videoUrls[index].url} />
+          <ConanReactPlayer
+            src={videoUrls[index].url}
+            isAutoPlay={isAutoPlay}
+            index={index}
+            setIndex={setIndex}
+            videoUrls={videoUrls}
+          />
         </div>
       </div>
     </div>

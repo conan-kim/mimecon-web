@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 
-const VideoPlayer = ({ src, type }) => {
+const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
   const videoRef = useRef();
 
   useEffect(() => {
@@ -24,6 +24,11 @@ const VideoPlayer = ({ src, type }) => {
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
     }
+
+    videoRef.current.addEventListener("ended", (event) => {
+      if (!isAutoPlay) return;
+      setIndex(index + 1 === videoUrls.length ? 0 : index + 1);
+    });
   }, [src, type]);
 
   return <video ref={videoRef} width={400} height={400} controls autoPlay />;
