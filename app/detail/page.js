@@ -9,9 +9,11 @@ import MuteSvg from "@/public/mute.svg";
 import UnmuteSvg from "@/public/unmuted.svg";
 import { useState } from "react";
 import VideoPlayer from "../../src/component/videoPlayer";
+import Modal from "../../src/component/modal";
 
 const Page = () => {
   const [isMuted, setIsMuted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const testUrl =
     "https://cdn-unifier.lucasai.io/mss/dev/mimecon/66754f293854fb06ac228fd6/669374424e2c0959eb4ff58e/8ef6cf10-cd6a-4c79-b8e4-2084e1f46c54/index.m3u8";
 
@@ -21,7 +23,12 @@ const Page = () => {
 
   const renderHeart = () => {
     return (
-      <div className="cursor-pointer flex flex-row items-center justify-center gap-1">
+      <div
+        className="cursor-pointer flex flex-row items-center justify-center gap-1"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
         <HeartSvg />
         <div className="text-white font-bold text-[12px]">34</div>
       </div>
@@ -30,7 +37,12 @@ const Page = () => {
 
   const renderTalk = () => {
     return (
-      <div className="cursor-pointer flex flex-row items-center justify-center gap-1">
+      <div
+        className="cursor-pointer flex flex-row items-center justify-center gap-1"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
         <TalkSvg />
         <div className="text-white font-bold text-[12px]">34</div>
       </div>
@@ -65,11 +77,21 @@ const Page = () => {
             </div>
             <div>hello</div>
             <div className="flex flex-row items-center justify-center gap-2 pt-2">
-              <div className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-[#00F49B]">
+              <div
+                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-[#00F49B]"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
                 <AISvg />
                 <div className="text-[14px] font-semibold">대화요약</div>
               </div>
-              <div className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B]">
+              <div
+                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B]"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
                 <TalkFilledSvg />
                 <div className="text-[#00F49B] text-[14px] font-semibold">
                   나도 대화해볼래
@@ -83,12 +105,23 @@ const Page = () => {
               {renderHeart()}
               {renderTalk()}
             </div>
-            <div className="cursor-pointer">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            >
               <ShareSvg />
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title="안녕?"
+        description="하하하!"
+      />
     </div>
   );
 };

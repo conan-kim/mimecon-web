@@ -45,8 +45,6 @@ const VideoPlayer = ({
   return (
     <video
       ref={videoRef}
-      // width={400}
-      // height={400}
       className="w-full h-full"
       controls
       autoPlay

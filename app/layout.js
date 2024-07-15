@@ -8,7 +8,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="max-w-screen-md m-auto whitespace-pre">{children}</body>
+      <body className="whitespace-pre relative h-[100vh]">
+        <div className="max-w-screen-md m-auto">{children}</div>
+        <div id="modal-root" />
+      </body>
     </html>
   );
 }
