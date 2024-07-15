@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import VideoPlayer from "../../src/component/videoPlayer";
-import ConanReactHlsPlayer from "../../src/component/connanReactHlsPlayer";
+import ConanReactHlsPlayer from "../../src/component/conanReactHlsPlayer";
 import ConanReactPlayer from "../../src/component/conanReactPlayer";
 
 const Page = () => {
