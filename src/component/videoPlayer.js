@@ -31,7 +31,16 @@ const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
     });
   }, [src, type]);
 
-  return <video ref={videoRef} width={400} height={400} controls autoPlay />;
+  return (
+    <video
+      ref={videoRef}
+      width={400}
+      height={400}
+      controls
+      autoPlay
+      playsinline
+    />
+  );
 };
 
 export default VideoPlayer;
