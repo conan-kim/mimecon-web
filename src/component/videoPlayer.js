@@ -38,9 +38,8 @@ const VideoPlayer = ({ src, index, setIndex, videoUrls, isAutoPlay, type }) => {
       height={400}
       controls
       autoPlay
-      playsinline
+      playsInline
       preload
-      webkit-playsinline
     />
   );
 };
