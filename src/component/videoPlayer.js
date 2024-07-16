@@ -11,6 +11,7 @@ const VideoPlayer = ({
   videoUrls,
   isAutoPlay,
   setProgress,
+  setNow,
   type,
   loop,
   ...rest
@@ -29,15 +30,12 @@ const VideoPlayer = ({
       hls.attachMedia(videoRef.current);
     }
 
+    // looping
     videoRef.current.addEventListener("ended", (event) => {
       if (!loop) return;
       setTimeout(() => {
         try {
-          console.log("hlelo");
           videoRef.current.play();
-          // setPlayCount((prev) => {
-          //   return prev + 1;
-          // });
         } catch (e) {
           console.log("e", e);
         }
@@ -45,21 +43,14 @@ const VideoPlayer = ({
     });
 
     videoRef.current.addEventListener("timeupdate", (event) => {
-      console.log(
-        "video",
-        videoRef?.current?.currentTime,
-        videoRef?.current?.duration
-      );
       if (!videoRef?.current?.duration) {
-        // progressRef.current = 0;
         setProgress(0);
         return;
       }
+      setNow(videoRef?.current?.currentTime);
       setProgress(
         (videoRef?.current?.currentTime / videoRef?.current?.duration) * 100
       );
-      // progressRef.current =
-      //   (videoRef.current.currentTime / videoRef.current.duration) * 100;
     });
   }, [src, type]);
 

@@ -12,14 +12,18 @@ import AISvg from "@/public/summary_talk.svg";
 import TalkFilledSvg from "@/public/talk_filled.svg";
 import MuteSvg from "@/public/mute.svg";
 import UnmuteSvg from "@/public/unmuted.svg";
+import axios from "axios";
+import { convertStringToNum } from "../../utils/math";
 
 const DetailPage = () => {
-  const [isPre, setIsPre] = useState(true);
+  // const [isPre, setIsPre] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [isAppDownloadModalOpen, setIsAppDownloadModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [now, setNow] = useState(0);
   const [progress, setProgress] = useState(0);
   const [data, setData] = useState(null);
+  const [vtt, setVtt] = useState([]);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -35,6 +39,10 @@ const DetailPage = () => {
     fetchDetail();
   }, []);
 
+  useEffect(() => {
+    fetchVtt();
+  }, [data]);
+
   const checkValidation = () => {
     let _valid = true;
     if (!id) _valid = false;
@@ -47,9 +55,47 @@ const DetailPage = () => {
         ? await axiosInstance.post("/mimecon/" + id)
         : await axiosInstance.put("/mimecontalk/" + id);
       setData(_res);
+      // await fetchVtt();
     } catch (e) {
       console.log("e", e);
       setIsErrorModalOpen(true);
+    }
+  };
+
+  const fetchVtt = async () => {
+    try {
+      if (!data || isMimecon) return;
+      const _vttData = data?.title_url;
+      const { data: _vttString } = await axios.get(_vttData);
+      console.log("vttString", _vttString);
+      let _result = [];
+      let _tmp = { startedAt: "", endedAt: "", content: "", isUser: false };
+      _vttString
+        .replace("WEBVTT", "")
+        .split("\n")
+        .filter((value) => {
+          return !!value;
+        })
+        .map((item, index) => {
+          console.log("item", item, index % 3);
+          if (index % 3 === 0) {
+            _tmp = { startedAt: "", endedAt: "", content: "", isUser: false };
+          }
+          if (index % 3 === 1) {
+            const _time = item.split(" --> ");
+            _tmp.startedAt = _time[0];
+            _tmp.endedAt = _time[1];
+          }
+          if (index % 3 === 2) {
+            const _time = item.split(">");
+            _tmp.content = _time[1];
+            _tmp.isUser = _time[0].indexOf("user") > -1;
+            _result.push(_tmp);
+          }
+        });
+      setVtt(_result);
+    } catch (e) {
+      console.log("e", e);
     }
   };
 
@@ -143,7 +189,59 @@ const DetailPage = () => {
   };
 
   const renderVtt = () => {
-    return <div className="text-red">VTT</div>;
+    if (!data) return;
+    if (isMimecon) {
+      return (
+        <div className="flex flex-col justify-center items-start text-white font-bold text-[14px] tracking-tight">
+          <div className="flex flex-row gap-2">
+            <div
+              className="h-5 w-5 rounded-full bg-white"
+              style={{
+                backgroundImage: "url(" + data?.mime?.img_url + ")",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div>{data?.title}</div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll">
+        {vtt.map((_value) => {
+          const isNow =
+            now > convertStringToNum(_value.startedAt) &&
+            now < convertStringToNum(_value.endedAt);
+          return (
+            <div className="flex flex-row gap-2 items-center">
+              {_value.isUser ? (
+                <div
+                  className="h-5 w-5 rounded-full bg-white"
+                  style={{
+                    backgroundImage: "url(" + data?.profile_img_url + ")",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              ) : (
+                <div
+                  className="h-5 w-5 rounded-full bg-white"
+                  style={{
+                    backgroundImage:
+                      "url(" + data?.mimecon?.mime?.img_url + ")",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              )}
+              <div className={isNow ? "font-bold" : ""}>{_value.content}</div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   // if (isPre) {
@@ -170,11 +268,12 @@ const DetailPage = () => {
             isAutoPlay
             loop
             setProgress={setProgress}
+            setNow={setNow}
             muted={isMuted}
           />
         )}
       </div>
-      <div className="absolute flex flex-col items-center justify-between w-full h-full">
+      <div className="absolute bg-gradient-to-b from-[#00000000] via-[#0000004d] to-[#0000002e] flex flex-col items-center justify-between w-full h-full">
         <div className="flex flex-row w-full items-center justify-between px-[12px] py-[8px] bg-black/70">
           {renderProfile()}
           <div className="cursor-pointer" onClick={openAppDownloadModal}>
