@@ -236,7 +236,9 @@ const DetailPage = () => {
                   }}
                 />
               )}
-              <div className={isNow ? "font-bold" : ""}>{_value.content}</div>
+              <div className={isNow ? "font-bold" : "opacity-60"}>
+                {_value.content}
+              </div>
             </div>
           );
         })}
