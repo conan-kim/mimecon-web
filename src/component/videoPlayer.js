@@ -5,10 +5,12 @@ import Hls from "hls.js";
 
 const VideoPlayer = ({
   src,
+  progressRef,
   index,
   setIndex,
   videoUrls,
   isAutoPlay,
+  setProgress,
   type,
   loop,
   ...rest
@@ -40,6 +42,24 @@ const VideoPlayer = ({
           console.log("e", e);
         }
       }, 500);
+    });
+
+    videoRef.current.addEventListener("timeupdate", (event) => {
+      console.log(
+        "video",
+        videoRef?.current?.currentTime,
+        videoRef?.current?.duration
+      );
+      if (!videoRef?.current?.duration) {
+        // progressRef.current = 0;
+        setProgress(0);
+        return;
+      }
+      setProgress(
+        (videoRef?.current?.currentTime / videoRef?.current?.duration) * 100
+      );
+      // progressRef.current =
+      //   (videoRef.current.currentTime / videoRef.current.duration) * 100;
     });
   }, [src, type]);
 

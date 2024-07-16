@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import VideoPlayer from "@/src/component/videoPlayer";
 import Modal from "@/src/component/modal";
@@ -18,11 +18,13 @@ const DetailPage = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isAppDownloadModalOpen, setIsAppDownloadModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [data, setData] = useState(null);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const isMimecon = searchParams.get("is-mimecon") === "true";
+  const progressRef = useRef(0);
 
   useEffect(() => {
     console.log("isMimecon", isMimecon, id);
@@ -163,9 +165,11 @@ const DetailPage = () => {
         {data && (
           <VideoPlayer
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}
+            progressRef={progressRef}
             type="m3u8"
             isAutoPlay
             loop
+            setProgress={setProgress}
             muted={isMuted}
           />
         )}
@@ -207,7 +211,12 @@ const DetailPage = () => {
               </div>
             </div>
           </div>
-          <div className="h-[1px] w-full bg-[#00F49B]"></div>
+          <div className="h-[1px] w-full bg-[#8a8a8a]">
+            <div
+              className="h-[1px] bg-[#00F49B]"
+              style={{ width: progress.toFixed(2).toString() + "%" }}
+            />
+          </div>
           <div className="flex flex-row pt-4 pb-6 px-3 justify-between items-center w-full backdrop-blur-2xl">
             <div className="flex flex-row gap-5">
               {renderHeart()}
