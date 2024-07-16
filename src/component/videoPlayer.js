@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
 const VideoPlayer = ({
@@ -10,36 +10,40 @@ const VideoPlayer = ({
   videoUrls,
   isAutoPlay,
   type,
-  loop,
+  ...rest
 }) => {
   const videoRef = useRef();
+  const [playCount, setPlayCount] = useState(0);
 
   useEffect(() => {
-    console.log(
-      "----- LOADED and his is supported?",
-      src,
-      type,
-      type === "m3u8",
-      Hls.isSupported(),
-      videoRef.current.canPlayType("application/vnd.apple.mpegurl")
-    );
     if (type === "m3u8" && Hls.isSupported()) {
       // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       //   // This will run in safari, where HLS is supported natively
-      //   videoRef.curret.src = src;
+      //   videoRef.current.src = src;
       // } else if (type === "m3u8" && Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
     }
 
-    videoRef.current.addEventListener("ended", (event) => {
-      if (!isAutoPlay) return;
-      setIndex(index + 1 === videoUrls.length ? 0 : index + 1);
-      // videoRef.current.play();
-    });
-
-    // videoRef.current.play();
+    // videoRef.current.addEventListener("canplay", (event) => {
+    //   if (!isAutoPlay) return;
+    //   // if (playCount) return;
+    //   console.log("canPlay!");
+    //   setTimeout(() => {
+    //     try {
+    //       console.log("playCount", playCount);
+    //       videoRef.current.pause();
+    //       videoRef.current.muted = false;
+    //       videoRef.current.play();
+    //       // setPlayCount((prev) => {
+    //       //   return prev + 1;
+    //       // });
+    //     } catch (e) {
+    //       console.log("e", e);
+    //     }
+    //   }, 100);
+    // });
   }, [src, type]);
 
   return (
@@ -48,10 +52,10 @@ const VideoPlayer = ({
       className="w-full h-full"
       controls
       autoPlay
-      muted
+      // muted
       playsInline
-      preload
-      loop
+      preload="auto"
+      {...rest}
     />
   );
 };

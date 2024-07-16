@@ -12,22 +12,25 @@ import VideoPlayer from "../../src/component/videoPlayer";
 import Modal from "../../src/component/modal";
 
 const Page = () => {
+  const [isPre, setIsPre] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const testUrl =
-    "https://cdn-unifier.lucasai.io/mss/dev/mimecon/66754f293854fb06ac228fd6/669374424e2c0959eb4ff58e/8ef6cf10-cd6a-4c79-b8e4-2084e1f46c54/index.m3u8";
+    "https://cdn-unifier.lucasai.io/mss/dev/mimecon/669383bb4e2c0959eb4ff5b2/669383bf4e2c0959eb4ff5b4/11e57118-f137-4e91-940f-0515c3ab0569/index.m3u8";
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
   };
 
   const renderHeart = () => {
     return (
       <div
         className="cursor-pointer flex flex-row items-center justify-center gap-1"
-        onClick={() => {
-          setIsOpen(true);
-        }}
+        onClick={openModal}
       >
         <HeartSvg />
         <div className="text-white font-bold text-[12px]">34</div>
@@ -39,9 +42,7 @@ const Page = () => {
     return (
       <div
         className="cursor-pointer flex flex-row items-center justify-center gap-1"
-        onClick={() => {
-          setIsOpen(true);
-        }}
+        onClick={openModal}
       >
         <TalkSvg />
         <div className="text-white font-bold text-[12px]">34</div>
@@ -49,10 +50,29 @@ const Page = () => {
     );
   };
 
+  // if (isPre) {
+  //   return (
+  //     <div
+  //       className="text-red cursor-pointer"
+  //       onClick={() => {
+  //         setIsPre(false);
+  //       }}
+  //     >
+  //       {">>"} Click Here to see the detail! {"<<"}
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="relative flex flex-1 flex-col h-[100vh]">
       <div className="bg-black w-full h-full">
-        <VideoPlayer src={testUrl} type="m3u8" />
+        <VideoPlayer
+          src={testUrl}
+          type="m3u8"
+          isAutoPlay
+          loop
+          muted={isMuted}
+        />
       </div>
       <div className="absolute flex flex-col items-center justify-between w-full h-full">
         <div className="flex flex-row w-full items-center justify-between px-[12px] py-[4px]">
@@ -79,18 +99,14 @@ const Page = () => {
             <div className="flex flex-row items-center justify-center gap-2 pt-2">
               <div
                 className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-[#00F49B]"
-                onClick={() => {
-                  setIsOpen(true);
-                }}
+                onClick={openModal}
               >
                 <AISvg />
                 <div className="text-[14px] font-semibold">대화요약</div>
               </div>
               <div
                 className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B]"
-                onClick={() => {
-                  setIsOpen(true);
-                }}
+                onClick={openModal}
               >
                 <TalkFilledSvg />
                 <div className="text-[#00F49B] text-[14px] font-semibold">
@@ -105,12 +121,7 @@ const Page = () => {
               {renderHeart()}
               {renderTalk()}
             </div>
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
+            <div className="cursor-pointer" onClick={openModal}>
               <ShareSvg />
             </div>
           </div>
