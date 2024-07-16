@@ -16,8 +16,17 @@ const Page = () => {
         <Link href="download" className="cursor-pointer">
           다운로드 페이지
         </Link>
-        <Link href="detail" className="cursor-pointer">
-          2-Depth 페이지
+        <Link
+          href="detail?id=669603135c7c034c8416727d&is-mimecon=true"
+          className="cursor-pointer"
+        >
+          2-Depth 페이지 (미미콘)
+        </Link>
+        <Link
+          href="detail?id=6695ca4b5c7c034c84167194&is-mimecon=false"
+          className="cursor-pointer"
+        >
+          2-Depth 페이지 (미미톡)
         </Link>
         <Link href="talk" className="cursor-pointer">
           대화하기 페이지

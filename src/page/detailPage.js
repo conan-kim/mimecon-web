@@ -22,7 +22,7 @@ const DetailPage = () => {
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const isMimecon = searchParams.get("is-mimecon");
+  const isMimecon = searchParams.get("is-mimecon") === "true";
 
   useEffect(() => {
     console.log("isMimecon", isMimecon, id);
