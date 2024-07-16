@@ -10,6 +10,7 @@ const VideoPlayer = ({
   videoUrls,
   isAutoPlay,
   type,
+  loop,
   ...rest
 }) => {
   const videoRef = useRef();
@@ -26,24 +27,20 @@ const VideoPlayer = ({
       hls.attachMedia(videoRef.current);
     }
 
-    // videoRef.current.addEventListener("canplay", (event) => {
-    //   if (!isAutoPlay) return;
-    //   // if (playCount) return;
-    //   console.log("canPlay!");
-    //   setTimeout(() => {
-    //     try {
-    //       console.log("playCount", playCount);
-    //       videoRef.current.pause();
-    //       videoRef.current.muted = false;
-    //       videoRef.current.play();
-    //       // setPlayCount((prev) => {
-    //       //   return prev + 1;
-    //       // });
-    //     } catch (e) {
-    //       console.log("e", e);
-    //     }
-    //   }, 100);
-    // });
+    videoRef.current.addEventListener("ended", (event) => {
+      if (!loop) return;
+      setTimeout(() => {
+        try {
+          console.log("hlelo");
+          videoRef.current.play();
+          // setPlayCount((prev) => {
+          //   return prev + 1;
+          // });
+        } catch (e) {
+          console.log("e", e);
+        }
+      }, 500);
+    });
   }, [src, type]);
 
   return (

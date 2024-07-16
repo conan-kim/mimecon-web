@@ -197,7 +197,7 @@ const DetailPage = () => {
                 <div className="text-[14px] font-semibold">대화요약</div>
               </div>
               <div
-                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B]"
+                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-black/20"
                 onClick={openAppDownloadModal}
               >
                 <TalkFilledSvg />
