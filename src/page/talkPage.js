@@ -44,6 +44,7 @@ const TalkPage = () => {
 
   useEffect(() => {
     if (!isConnected) return;
+    if (!mimecon) return;
     const reactTimer = setInterval(() => {
       const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
       console.log("diff is", diff);
@@ -53,12 +54,11 @@ const TalkPage = () => {
       } else if (diff === 240) {
         setVideoUrl(mimecon?.session_expiration02_url);
         setText("더 이상 대답하지 않으면 대화를 끝낼게.");
-        console.log("again!hi");
       }
     }, 1000);
 
     return () => clearInterval(reactTimer);
-  }, [isConnected, timeLastReactedAt]);
+  }, [isConnected, mimecon, timeLastReactedAt]);
 
   const formatTime = (seconds) => {
     const pad = (num) => String(num).padStart(2, "0");

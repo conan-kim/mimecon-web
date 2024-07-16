@@ -210,12 +210,15 @@ const DetailPage = () => {
 
     return (
       <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll">
-        {vtt.map((_value) => {
+        {vtt.map((_value, _idx) => {
           const isNow =
             now > convertStringToNum(_value.startedAt) &&
             now < convertStringToNum(_value.endedAt);
           return (
-            <div className="flex flex-row gap-2 items-center">
+            <div
+              key={_idx + "vtt"}
+              className="flex flex-row gap-2 items-center"
+            >
               {_value.isUser ? (
                 <div
                   className="h-5 w-5 rounded-full bg-white"
