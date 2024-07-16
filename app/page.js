@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Page = () => {
   return (
-    <div className="bg-transparent break-keep whitespace-pre bg-red-400 flex flex-1 min-h- flex flex-col">
+    <div className="bg-transparent break-keep whitespace-pre bg-red-400 flex flex-1 min-h- flex flex-col p-4">
       <div className="font-bold text-[20px] py-[20px]">
         미미콘 웹 테스트 페이지
       </div>

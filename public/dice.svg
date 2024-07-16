@@ -1,0 +1,21 @@
+<svg data-name="그룹 187423" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <defs>
+        <clipPath id="uetdptycvb">
+            <rect data-name="사각형 23060" width="20" height="20" rx="6" style="fill:#fff;stroke:#707070"/>
+        </clipPath>
+        <clipPath id="a5gukt0iuc">
+            <path data-name="사각형 23059" style="fill:url(#94zhe4lk3a)" d="M0 0h20v20H0z"/>
+        </clipPath>
+        <linearGradient id="94zhe4lk3a" x1=".053" y1=".035" x2=".977" y2=".959" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#00f28c"/>
+            <stop offset="1" stop-color="#00e5ca"/>
+        </linearGradient>
+    </defs>
+    <g data-name="그룹 89" style="clip-path:url(#uetdptycvb)">
+        <g data-name="그룹 187422">
+            <g data-name="그룹 187421" style="clip-path:url(#a5gukt0iuc)">
+                <path data-name="패스 55643" d="M19.972 3.165A3.181 3.181 0 0 0 16.835.027Q10-.028 3.165.027A3.181 3.181 0 0 0 .027 3.165q-.055 6.835 0 13.67a3.181 3.181 0 0 0 3.138 3.138q6.835.055 13.67 0a3.181 3.181 0 0 0 3.138-3.138q.055-6.835 0-13.67M5.919 15.645a1.572 1.572 0 0 1-1.564-1.565 1.561 1.561 0 1 1 1.565 1.565M10 11.562A1.562 1.562 0 1 1 11.562 10 1.563 1.563 0 0 1 10 11.562m4.086-4.086a1.561 1.561 0 1 1 1.559-1.557 1.566 1.566 0 0 1-1.559 1.557" style="fill:url(#94zhe4lk3a)"/>
+            </g>
+        </g>
+    </g>
+</svg>

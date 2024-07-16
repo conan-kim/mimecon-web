@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import VideoPlayer from "@/src/component/videoPlayer";
-import Modal from "@/src/component/modal";
+import Modal from "@/src/component/modal/modal";
 import axiosInstance from "@/api/axiosInstance";
 
 import HeartSvg from "@/public/heart.svg";

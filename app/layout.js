@@ -13,6 +13,7 @@ export default function RootLayout({ children }) {
         <LoadingProvider>
           <div className="max-w-screen-md m-auto">{children}</div>
           <div id="modal-root" />
+          <div id="tnc" />
         </LoadingProvider>
       </body>
     </html>

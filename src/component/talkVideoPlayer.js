@@ -3,21 +3,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
-const VideoPlayer = ({
+const TalkVideoPlayer = ({
   src,
-  progressRef,
+  idleUrl,
   index,
   setIndex,
-  videoUrls,
-  isAutoPlay,
-  setProgress,
-  setNow,
   type,
   loop,
+  onVideoEnded,
   ...rest
 }) => {
   const videoRef = useRef();
-  const [playCount, setPlayCount] = useState(0);
 
   useEffect(() => {
     if (type === "m3u8" && Hls.isSupported()) {
@@ -32,41 +28,30 @@ const VideoPlayer = ({
 
     // looping
     videoRef.current.addEventListener("ended", (event) => {
-      if (!loop) return;
+      console.log(src, type, "hi");
       setTimeout(() => {
         try {
+          onVideoEnded();
           videoRef.current.play();
         } catch (e) {
           console.log("e", e);
         }
-      }, 500);
+      }, 100);
     });
-
-    videoRef.current.addEventListener("timeupdate", (event) => {
-      if (!setProgress) return;
-      if (!videoRef?.current?.duration) {
-        setProgress(0);
-        return;
-      }
-      setNow(videoRef?.current?.currentTime);
-      setProgress(
-        (videoRef?.current?.currentTime / videoRef?.current?.duration) * 100
-      );
-    });
-  }, [src, type]);
+  }, [src]);
 
   return (
-    <video
-      ref={videoRef}
-      className="w-full h-full"
-      // controls
-      autoPlay
-      // muted
-      playsInline
-      preload="auto"
-      {...rest}
-    />
+    <div className="flex flex-1 w-full h-full justify-center items-center">
+      <video
+        ref={videoRef}
+        className="h-full"
+        autoPlay
+        playsInline
+        preload="auto"
+        {...rest}
+      />
+    </div>
   );
 };
 
-export default VideoPlayer;
+export default TalkVideoPlayer;
