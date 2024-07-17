@@ -4,7 +4,7 @@ import Link from "next/link";
 import NicknameModal from "../component/modal/nicknameModal";
 import axiosInstance from "../../api/axiosInstance";
 import TalkVideoPlayer from "../component/talkVideoPlayer";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Modal from "../component/modal/modal";
 import { usePlatform } from "../../context/platformContext";
 
@@ -18,7 +18,7 @@ import InfoSvg from "@/public/info.svg";
 import ListenJson from "@/public/listen.json";
 import AskJson from "@/public/ask.json";
 import Lottie from "react-lottie-player";
-import TermsAndCondition from "../component/modal/termsAndCondition";
+import TalkCompleteModal from "../component/modal/talkCompleteModal";
 
 const TalkPage = () => {
   const VOICE_STATUS = {
@@ -36,7 +36,8 @@ const TalkPage = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [isTncOpen, setIsTncOpen] = useState(false);
+  const [isEndModalOpen, setIsEndModalOpen] = useState(false);
+  const [isAbsenceModalOpen, setIsAbsenceModalOpen] = useState(false);
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
   const [inputText, setInputText] = useState("");
@@ -47,6 +48,7 @@ const TalkPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [audioFile, setAudioFile] = useState(null);
 
+  const router = useRouter();
   const { getDownloadLink } = usePlatform();
 
   const searchParams = useSearchParams();
@@ -93,6 +95,8 @@ const TalkPage = () => {
       } else if (diff === 240) {
         setVideoUrl(mimecon?.session_expiration02_url);
         setText("더 이상 대답하지 않으면 대화를 끝낼게.");
+      } else if (diff === 300) {
+        setIsAbsenceModalOpen(true);
       }
     }, 1000);
 
@@ -174,6 +178,7 @@ const TalkPage = () => {
       await axiosInstance.get(
         `/guest/mimecon/end?chat_room_id=${chatroomId}&session_expiration=${session_expiration}`
       );
+      router.push("download");
     } catch (e) {
       console.log("error", e);
     }
@@ -498,7 +503,7 @@ const TalkPage = () => {
         <div
           className="cursor-pointer px-[12px] py-[8px] rounded-full border border-white/80"
           onClick={() => {
-            endChatroom(true);
+            setIsEndModalOpen(true);
           }}
         >
           <div className="text-white/80">대화종료</div>
@@ -567,6 +572,19 @@ const TalkPage = () => {
         description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
         cancelText="확인"
         confirmText="만들러가기"
+      />
+      <TalkCompleteModal
+        isOpen={isEndModalOpen}
+        setIsOpen={setIsEndModalOpen}
+        onConfirm={() => {
+          endChatroom(true);
+        }}
+      />
+      <Modal
+        isOpen={isAbsenceModalOpen}
+        setIsOpen={setIsAbsenceModalOpen}
+        title="앗! 어디 가셨었나요?"
+        description="대답이 없으셔서 대화가 종료되었어요. 직접 미미콘을 만들어보는 건 어때요?"
       />
     </div>
   );

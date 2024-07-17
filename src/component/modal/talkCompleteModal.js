@@ -4,16 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePlatform } from "../../../context/platformContext";
 
-const Modal = ({
-  isOpen,
-  setIsOpen,
-  title,
-  description,
-  cancelText,
-  confirmText,
-  onCancel,
-  onConfirm,
-}) => {
+const TalkCompleteModal = ({ isOpen, setIsOpen, onConfirm }) => {
   const { getDownloadLink } = usePlatform();
 
   if (!isOpen) return;
@@ -26,22 +17,22 @@ const Modal = ({
     >
       <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-3">
-          <div className="font-bold text-[18px]">{title}</div>
-          <div className="text-[16px] leading-[24px] text-[#444444] text-wrap whitespace-pre">
-            {description}
+          <div className="font-bold text-[18px]">
+            미미콘과 즐거운 대화 나누셨나요?
+          </div>
+          <div className="text-[16px] leading-[24px] text-[#444444] text-wrap">
+            대화를 마치고 저장할까요?{"\n"}나눈 대화를 저장하면 보낸 사람이 볼
+            수 있어요.
           </div>
         </div>
         <div className="flex flex-row gap-2">
           <div
             className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#E8FAF4]"
             onClick={() => {
-              if (onCancel) {
-                onCancel();
-              }
-              setIsOpen((prev) => !prev);
+              setIsOpen(false);
             }}
           >
-            {cancelText ?? "취소"}
+            취소
           </div>
           <Link
             href={getDownloadLink()}
@@ -50,10 +41,10 @@ const Modal = ({
               if (onConfirm) {
                 onConfirm();
               }
-              setIsOpen((prev) => !prev);
+              setIsOpen(false);
             }}
           >
-            {confirmText ?? "앱 다운로드"}
+            대화 저장하기
           </Link>
         </div>
       </div>
@@ -62,4 +53,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default TalkCompleteModal;
