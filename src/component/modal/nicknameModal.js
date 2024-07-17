@@ -26,10 +26,6 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
     }
   }, [agreed, nickname]);
 
-  // useEffect(() => {
-  //   checkDuplicateNickname();
-  // }, [nickname]);
-
   const getRandomNickname = async () => {
     try {
       const { nick_name, guest_id } = await axiosInstance.post(

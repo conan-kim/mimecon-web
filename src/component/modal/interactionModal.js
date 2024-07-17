@@ -1,37 +1,12 @@
 "use client";
+
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import LogoSvg from "@/public/logo.svg";
 
 const InterActionModal = ({ isOpen, setIsOpen, onConfirm }) => {
-  const [platform, setPlatform] = useState("desktop");
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    console.log("userAgent", userAgent);
-    if (/android/i.test(userAgent)) {
-      setPlatform("android");
-    } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-      setPlatform("ios");
-    } else {
-      setPlatform("desktop");
-    }
-  }, []);
-
-  const getDownloadLink = () => {
-    switch (platform) {
-      case "android":
-        return "https://www.naver.com";
-      case "ios":
-        return "https://www.daum.net";
-      case "desktop":
-        return "download";
-      default:
-        return "download";
-    }
-  };
+  const { getDownloadLink } = usePlatform();
 
   if (!isOpen) return;
   return createPortal(

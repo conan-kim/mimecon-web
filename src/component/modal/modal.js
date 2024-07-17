@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePlatform } from "../../../context/platformContext";
 
 const Modal = ({
   isOpen,
@@ -12,6 +14,8 @@ const Modal = ({
   onCancel,
   onConfirm,
 }) => {
+  const { getDownloadLink } = usePlatform();
+
   if (!isOpen) return;
   return createPortal(
     <div
@@ -40,7 +44,7 @@ const Modal = ({
             {cancelText ?? "취소"}
           </div>
           <Link
-            href="download"
+            href={getDownloadLink()}
             className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00F49B] text-white"
             onClick={() => {
               if (onConfirm) {

@@ -14,6 +14,7 @@ import axiosInstance from "../../api/axiosInstance";
 import TalkVideoPlayer from "../component/talkVideoPlayer";
 import { useSearchParams } from "next/navigation";
 import Modal from "../component/modal/modal";
+import { usePlatform } from "../../context/platformContext";
 
 const TalkPage = () => {
   const [isMuted, setIsMuted] = useState(false);
@@ -29,11 +30,14 @@ const TalkPage = () => {
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
 
+  const { getDownloadLink } = usePlatform();
+
   const searchParams = useSearchParams();
   const mimecon_id = searchParams.get("mimecon_id");
 
   useEffect(() => {
     if (!mimecon_id) {
+      console.log("------");
       setIsErrorModalOpen(true);
       return;
     }
@@ -97,7 +101,7 @@ const TalkPage = () => {
   const connectChatroom = async () => {
     try {
       const { available_chatroom, available_link } = await axiosInstance.get(
-        `mimecon/connect?mimecon_id=${mimecon_id}`
+        `/mimecon/connect?mimecon_id=${mimecon_id}`
       );
       if (available_chatroom && available_link) {
         setIsNicknameModalOpen(true);
@@ -120,7 +124,7 @@ const TalkPage = () => {
         live_url,
         text: _text,
       } = await axiosInstance.get(
-        `guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
+        `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
       );
       setIsConnected(true);
       setTimeLastReactedAt(new Date());
@@ -136,7 +140,7 @@ const TalkPage = () => {
   const endChatroom = async (session_expiration) => {
     try {
       await axiosInstance.get(
-        `guest/mimecon/end?chat_room_id=${chatroomId}&session_expiration=${session_expiration}`
+        `/guest/mimecon/end?chat_room_id=${chatroomId}&session_expiration=${session_expiration}`
       );
     } catch (e) {
       console.log("error", e);
@@ -150,7 +154,7 @@ const TalkPage = () => {
         text: inputText,
       };
       const { live_url, text: _text } = await axiosInstance.post(
-        "guest/mimecon/talk",
+        "/guest/mimecon/talk",
         params
       );
       setVideoUrl(live_url);
@@ -167,7 +171,7 @@ const TalkPage = () => {
         chat_room_id: chatroomId,
       };
       const { live_url, text: _text } = await axiosInstance.post(
-        "guest/mimecon/talk",
+        "/guest/mimecon/talk",
         params
       );
       setVideoUrl(live_url);
@@ -192,7 +196,7 @@ const TalkPage = () => {
     <div className="relative flex flex-col h-[100vh] bg-black">
       <div className="flex flex-row justify-between items-center px-[12px] py-[8px]">
         <Link
-          href="download"
+          href={getDownloadLink()}
           className="flex flex-row justify-center items-center gap-1"
         >
           <LogoSvg width={40} height={40} />

@@ -1,4 +1,5 @@
 import { LoadingProvider } from "../context/loadingContext";
+import { PlatformProvider } from "../context/platformContext";
 import "./globals.css";
 
 export const metadata = {
@@ -11,9 +12,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="whitespace-pre relative h-[100vh]">
         <LoadingProvider>
-          <div className="max-w-screen-md m-auto">{children}</div>
-          <div id="modal-root" />
-          <div id="tnc" />
+          <PlatformProvider>
+            <div className="max-w-screen-md m-auto">{children}</div>
+            <div id="modal-root" />
+            <div id="tnc" />
+          </PlatformProvider>
         </LoadingProvider>
       </body>
     </html>
