@@ -13,11 +13,13 @@ import NicknameModal from "../component/modal/nicknameModal";
 import axiosInstance from "../../api/axiosInstance";
 import TalkVideoPlayer from "../component/talkVideoPlayer";
 import { useSearchParams } from "next/navigation";
+import Modal from "../component/modal/modal";
 
 const TalkPage = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
   const [inputText, setInputText] = useState("");
@@ -31,6 +33,10 @@ const TalkPage = () => {
   const mimecon_id = searchParams.get("mimecon_id");
 
   useEffect(() => {
+    if (!mimecon_id) {
+      setIsErrorModalOpen(true);
+      return;
+    }
     fetchMimecon();
     connectChatroom();
   }, []);
@@ -84,6 +90,7 @@ const TalkPage = () => {
       setIdleUrl(res?.idle_url);
     } catch (e) {
       console.log("error", e);
+      setIsErrorModalOpen(true);
     }
   };
 
@@ -96,8 +103,10 @@ const TalkPage = () => {
         setIsNicknameModalOpen(true);
       } else if (!available_chatroom) {
         // TODO: unavailable_chatroom
+        setIsErrorModalOpen(true);
       } else if (!available_link) {
         // TODO: unavailable_link
+        setIsErrorModalOpen(true);
       }
     } catch (e) {
       console.log("error", e);
@@ -120,6 +129,7 @@ const TalkPage = () => {
       setText(_text);
     } catch (e) {
       console.log("error", e);
+      setIsErrorModalOpen(true);
     }
   };
 
@@ -170,15 +180,12 @@ const TalkPage = () => {
 
   const onModalClose = async (guest_id, nick_name) => {
     joinChatroom(guest_id, nick_name);
-    // 데이터 저장하기
   };
 
   const onVideoEnded = () => {
-    console.log("onVideoEnded!!");
-    if (videoUrl !== idleUrl) {
-      setVideoUrl(idleUrl);
-      setText("");
-    }
+    if (videoUrl === idleUrl) return;
+    setVideoUrl(idleUrl);
+    setText("");
   };
 
   return (
@@ -250,6 +257,14 @@ const TalkPage = () => {
         isOpen={isNicknameModalOpen}
         setIsOpen={setIsNicknameModalOpen}
         onCompleted={onModalClose}
+      />
+      <Modal
+        isOpen={isErrorModalOpen}
+        setIsOpen={setIsErrorModalOpen}
+        title="확인할 수 없는 미미콘이에요 😢"
+        description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
+        cancelText="확인"
+        confirmText="만들러가기"
       />
     </div>
   );

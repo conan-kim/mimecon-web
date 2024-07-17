@@ -26,9 +26,9 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
     }
   }, [agreed, nickname]);
 
-  useEffect(() => {
-    checkDuplicateNickname();
-  }, [nickname]);
+  // useEffect(() => {
+  //   checkDuplicateNickname();
+  // }, [nickname]);
 
   const getRandomNickname = async () => {
     try {
@@ -42,11 +42,11 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
     }
   };
 
-  const checkDuplicateNickname = async () => {
+  const checkDuplicateNickname = async (_nickname) => {
     try {
-      console.log("check duplication for", nickname);
+      console.log("check duplication for", _nickname);
       const res = await axiosInstance.get(
-        "guest/check_duplicate_nickname?nick_name=" + nickname
+        "guest/check_duplicate_nickname?nick_name=" + _nickname
       );
       setIsDuplicated(res);
     } catch (e) {
@@ -56,6 +56,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
 
   const onChange = (event) => {
     setNickname(event.target.value);
+    checkDuplicateNickname(event.target.value);
   };
 
   if (!isOpen) return;

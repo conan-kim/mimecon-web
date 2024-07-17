@@ -14,12 +14,14 @@ import MuteSvg from "@/public/mute.svg";
 import UnmuteSvg from "@/public/unmuted.svg";
 import axios from "axios";
 import { convertStringToNum } from "../../utils/math";
+import InterActionModal from "../component/modal/interactionModal";
 
 const DetailPage = () => {
-  // const [isPre, setIsPre] = useState(true);
+  const [isPre, setIsPre] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [isAppDownloadModalOpen, setIsAppDownloadModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isInterActionModalOpen, setIsInterActionModalOpen] = useState(true);
   const [now, setNow] = useState(0);
   const [progress, setProgress] = useState(0);
   const [data, setData] = useState(null);
@@ -55,7 +57,6 @@ const DetailPage = () => {
         ? await axiosInstance.post("/mimecon/" + id)
         : await axiosInstance.put("/mimecontalk/" + id);
       setData(_res);
-      // await fetchVtt();
     } catch (e) {
       console.log("e", e);
       setIsErrorModalOpen(true);
@@ -265,7 +266,7 @@ const DetailPage = () => {
   return (
     <div className="relative flex flex-1 flex-col h-[100vh]">
       <div className="bg-black w-full h-full">
-        {data && (
+        {!isPre && data && (
           <VideoPlayer
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}
             progressRef={progressRef}
@@ -345,6 +346,11 @@ const DetailPage = () => {
         description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
         cancelText="확인"
         confirmText="만들러가기"
+      />
+      <InterActionModal
+        isOpen={isInterActionModalOpen}
+        setIsOpen={setIsInterActionModalOpen}
+        onConfirm={() => setIsPre(false)}
       />
     </div>
   );
