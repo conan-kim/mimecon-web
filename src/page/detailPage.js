@@ -271,7 +271,6 @@ const DetailPage = () => {
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}
             progressRef={progressRef}
             type="m3u8"
-            isAutoPlay
             loop
             setProgress={setProgress}
             setNow={setNow}

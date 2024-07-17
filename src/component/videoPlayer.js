@@ -9,7 +9,6 @@ const VideoPlayer = ({
   index,
   setIndex,
   videoUrls,
-  isAutoPlay,
   setProgress,
   setNow,
   type,
@@ -17,7 +16,6 @@ const VideoPlayer = ({
   ...rest
 }) => {
   const videoRef = useRef();
-  const [playCount, setPlayCount] = useState(0);
 
   useEffect(() => {
     if (type === "m3u8" && Hls.isSupported()) {
@@ -59,9 +57,7 @@ const VideoPlayer = ({
     <video
       ref={videoRef}
       className="w-full h-full"
-      // controls
       autoPlay
-      // muted
       playsInline
       preload="auto"
       {...rest}
