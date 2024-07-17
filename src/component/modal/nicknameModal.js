@@ -5,11 +5,13 @@ import UnCheckedSvg from "@/public/checkbox-true.svg";
 import CheckedSvg from "@/public/checkbox-false.svg";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../api/axiosInstance";
+import TermsAndCondition from "./termsAndCondition";
 
 const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
   const [agreed, setAgreed] = useState(false);
   const [valid, setValid] = useState(false);
   const [isDuplicated, setIsDuplicated] = useState(false);
+  const [isTncOpen, setIsTncOpen] = useState(false);
 
   const [nickname, setNickname] = useState("");
   const [guestId, setGuestId] = useState("");
@@ -107,7 +109,9 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
               </div>
               <div
                 className="text-[12px] text-[#9a9a9a] underline cursor-pointer"
-                onClick={() => {}}
+                onClick={() => {
+                  setIsTncOpen(true);
+                }}
               >
                 자세히보기
               </div>
@@ -133,6 +137,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
           </div>
         </div>
       </div>
+      <TermsAndCondition isOpen={isTncOpen} setIsOpen={setIsTncOpen} />
     </div>,
     document.getElementById("modal-root")
   );

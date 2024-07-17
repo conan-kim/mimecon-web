@@ -15,17 +15,28 @@ import TimerSvg from "@/public/timer.svg";
 import MicSvg from "@/public/mic.svg";
 import SendSvg from "@/public/send.svg";
 import InfoSvg from "@/public/info.svg";
+import ListenJson from "@/public/listen.json";
+import AskJson from "@/public/ask.json";
+import Lottie from "react-lottie-player";
+import TermsAndCondition from "../component/modal/termsAndCondition";
 
 const TalkPage = () => {
+  const VOICE_STATUS = {
+    LISTENING: 0,
+    UPLOADING: 1,
+    REPLYING: 2,
+  };
   const [isMicOpen, setIsMicOpen] = useState(false);
   const [isSttOpen, setIsSttOpen] = useState(false);
   const [micStream, setMicStream] = useState(null);
   const [useVoice, setUseVoice] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState(VOICE_STATUS.LISTENING);
   const [showToast, setShowToast] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isTncOpen, setIsTncOpen] = useState(false);
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
   const [inputText, setInputText] = useState("");
@@ -188,6 +199,7 @@ const TalkPage = () => {
 
   const sendVoice = async () => {
     try {
+      setVoiceStatus(VOICE_STATUS.UPLOADING);
       const params = {
         chat_room_id: chatroomId,
         text: inputText,
@@ -197,6 +209,7 @@ const TalkPage = () => {
         "/guest/mimecon/talk",
         params
       );
+      setVoiceStatus(VOICE_STATUS.REPLYING);
       setVideoUrl(live_url);
       setText(_text);
       setTimeLastReactedAt(new Date());
@@ -213,6 +226,7 @@ const TalkPage = () => {
     if (videoUrl === idleUrl) return;
     setVideoUrl(idleUrl);
     setText("");
+    setVoiceStatus(VOICE_STATUS.LISTENING);
   };
 
   const connectStt = async () => {
@@ -384,6 +398,8 @@ const TalkPage = () => {
           },
         }
       );
+      dataFromWs.current = [];
+      data.current = [];
       setAudioFile(res);
     } catch (e) {
       console.log("e", e);
@@ -433,6 +449,38 @@ const TalkPage = () => {
     } catch (e) {
       console.log("error", e);
     }
+  };
+
+  const renderInput = () => {
+    return useVoice ? (
+      <div className="flex flex-row rounded-full p-2 bg-gradient-to-r from-[#03de9d] to-[#05dfc2] text-white">
+        {voiceStatus === VOICE_STATUS.LISTENING ? (
+          <div className="flex flex-row items-center justify-center pr-[12px]">
+            <div className="">
+              <Lottie loop animationData={ListenJson} play width={40} />
+            </div>
+            <div>듣고있어요</div>
+          </div>
+        ) : (
+          <Lottie loop animationData={AskJson} play />
+        )}
+      </div>
+    ) : (
+      <div className="flex flex-row rounded-full items-center justify-between w-full p-[20px] bg-black/60">
+        <input
+          className="flex-1 w-full bg-transparent border-none focus:outline-none border-transparent focus:border-transparent focus:ring-0 text-white"
+          placeholder="메세지 입력"
+          onChange={onChange}
+          value={inputText}
+        />
+        <div
+          className="cursor-pointer"
+          onClick={inputText ? sendText : connectStt}
+        >
+          {inputText ? <SendSvg /> : <MicSvg />}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -501,20 +549,7 @@ const TalkPage = () => {
                 <div className="bg-black/60 text-white text-[18px] max-w-[400px] text-center text-wrap break-keep">
                   {text}
                 </div>
-                <div className="flex flex-row rounded-full items-center justify-between w-full p-[20px] bg-black/60">
-                  <input
-                    className="flex-1 w-full bg-transparent border-none focus:outline-none border-transparent focus:border-transparent focus:ring-0 text-white"
-                    placeholder="메세지 입력"
-                    onChange={onChange}
-                    value={inputText}
-                  />
-                  <div
-                    className="cursor-pointer"
-                    onClick={inputText ? sendText : connectStt}
-                  >
-                    {inputText ? <SendSvg /> : <MicSvg />}
-                  </div>
-                </div>
+                {renderInput()}
               </div>
             </div>
           </div>
