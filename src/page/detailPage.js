@@ -335,8 +335,8 @@ const DetailPage = () => {
       <Modal
         isOpen={isAppDownloadModalOpen}
         setIsOpen={setIsAppDownloadModalOpen}
-        title="안녕?"
-        description="하하하!"
+        title="앗! 앱 실행 또는 다운로드해주세요."
+        description="앱을 사용하여 더 다양하게 즐겨보세요!"
       />
       <Modal
         isOpen={isErrorModalOpen}
