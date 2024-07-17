@@ -196,6 +196,7 @@ const TalkPage = () => {
       );
       setVideoUrl(live_url);
       setText(_text);
+      setInputText("");
       setTimeLastReactedAt(new Date());
     } catch (e) {
       console.log("error", e);
@@ -217,6 +218,7 @@ const TalkPage = () => {
       setVoiceStatus(VOICE_STATUS.REPLYING);
       setVideoUrl(live_url);
       setText(_text);
+      setInputText("");
       setTimeLastReactedAt(new Date());
     } catch (e) {
       console.log("error", e);

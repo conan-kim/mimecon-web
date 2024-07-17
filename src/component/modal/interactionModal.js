@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 
 import LogoSvg from "@/public/logo.svg";
+import { usePlatform } from "../../../context/platformContext";
 
 const InterActionModal = ({ isOpen, setIsOpen, onConfirm }) => {
   const { getDownloadLink } = usePlatform();
