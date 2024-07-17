@@ -34,6 +34,7 @@ const TalkPage = () => {
   const [timeLastReactedAt, setTimeLastReactedAt] = useState(new Date());
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [audioFile, setAudioFile] = useState(null);
 
   const { getDownloadLink } = usePlatform();
 
@@ -75,7 +76,6 @@ const TalkPage = () => {
     if (!mimecon) return;
     const reactTimer = setInterval(() => {
       const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
-      console.log("diff is", diff);
       if (diff === 180) {
         setVideoUrl(mimecon?.session_expiration01_url);
         setText("어디갔니? 왜 말이 없어?");
@@ -190,6 +190,8 @@ const TalkPage = () => {
     try {
       const params = {
         chat_room_id: chatroomId,
+        text: inputText,
+        ...audioFile,
       };
       const { live_url, text: _text } = await axiosInstance.post(
         "/guest/mimecon/talk",
@@ -240,11 +242,12 @@ const TalkPage = () => {
           }
           if (message.length < 30) return;
           const jsonData = JSON.parse(message);
-          console.log("jsonData", jsonData["transcript"]);
           setText(jsonData["wordAlignment"].map((e) => e["word"]).join(" "));
           const isFinal = jsonData["final"];
-          if (isFinal) {
-            setText(jsonData["transcript"]);
+          const _text = jsonData["transcript"];
+          if (isFinal && _text.length > 2) {
+            setText(_text);
+            uploadAudioAndSend();
           }
         };
 
@@ -353,6 +356,85 @@ const TalkPage = () => {
     return dataView;
   };
 
+  const saveWavFile = () => {
+    const wavData = encodeWAV(data.current);
+    const blob = new Blob([wavData], { type: "audio/wav" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = "audio.wav";
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const uploadWavFile = async () => {
+    try {
+      const wavData = encodeWAV(data.current);
+      const blob = new Blob([wavData], { type: "audio/wav" });
+      const formData = new FormData();
+      formData.append("file", blob, "audio.wav");
+      const res = await axiosInstance.post(
+        "/guest/mimecon/upload_audio",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setAudioFile(res);
+    } catch (e) {
+      console.log("e", e);
+    }
+  };
+
+  const encodeWAV = (samples) => {
+    const buffer = new ArrayBuffer(44 + samples.length * 2);
+    const view = new DataView(buffer);
+
+    const writeString = (view, offset, string) => {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    };
+
+    const floatTo16BitPCM = (output, offset, input) => {
+      for (let i = 0; i < input.length; i++, offset += 2) {
+        const s = Math.max(-1, Math.min(1, input[i]));
+        output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+      }
+    };
+
+    writeString(view, 0, "RIFF");
+    view.setUint32(4, 32 + samples.length * 2, true);
+    writeString(view, 8, "WAVE");
+    writeString(view, 12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, numChannels * 2, true);
+    view.setUint16(34, 16, true);
+    writeString(view, 36, "data");
+    view.setUint32(40, samples.length * 2, true);
+
+    floatTo16BitPCM(view, 44, samples);
+
+    return view;
+  };
+
+  const uploadAudioAndSend = async () => {
+    try {
+      await uploadWavFile();
+      await sendVoice();
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
   return (
     <div className="relative flex flex-col h-[100vh] bg-black">
       <div className="flex flex-row justify-between items-center px-[12px] py-[8px]">
@@ -409,7 +491,7 @@ const TalkPage = () => {
                       ? "py-[8px] px-[12px] flex flex-row items-center justify-center bg-[#EB4D4D] rounded-full text-white gap-2"
                       : "py-[8px] px-[12px] flex flex-row items-center justify-center bg-black/60 rounded-full text-white gap-2"
                   }
-                  onClick={closeMic}
+                  onClick={uploadWavFile}
                 >
                   <TimerSvg />
                   <div>{formatTime(time)}</div>
