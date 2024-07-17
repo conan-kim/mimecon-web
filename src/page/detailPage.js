@@ -339,12 +339,12 @@ const DetailPage = () => {
         description="하하하!"
       />
       <Modal
-        type="error"
         isOpen={isErrorModalOpen}
         setIsOpen={setIsErrorModalOpen}
-        title="에러.. 안돼"
-        description="안돼"
+        title="확인할 수 없는 미미콘이에요 😢"
+        description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
         cancelText="확인"
+        confirmText="만들러가기"
       />
     </div>
   );

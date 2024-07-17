@@ -28,7 +28,10 @@ const Page = () => {
         >
           2-Depth 페이지 (미미톡)
         </Link>
-        <Link href="talk" className="cursor-pointer">
+        <Link
+          href="talk?mimecon_id=669603135c7c034c8416727d"
+          className="cursor-pointer"
+        >
           대화하기 페이지
         </Link>
       </div>

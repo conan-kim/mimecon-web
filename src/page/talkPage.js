@@ -12,6 +12,7 @@ import SendSvg from "@/public/send.svg";
 import NicknameModal from "../component/modal/nicknameModal";
 import axiosInstance from "../../api/axiosInstance";
 import TalkVideoPlayer from "../component/talkVideoPlayer";
+import { useSearchParams } from "next/navigation";
 
 const TalkPage = () => {
   const [isMuted, setIsMuted] = useState(false);
@@ -26,7 +27,8 @@ const TalkPage = () => {
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
 
-  const mimecon_id = "669603135c7c034c8416727d";
+  const searchParams = useSearchParams();
+  const mimecon_id = searchParams.get("mimecon_id");
 
   useEffect(() => {
     fetchMimecon();

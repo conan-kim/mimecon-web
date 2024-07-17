@@ -11,7 +11,6 @@ const Modal = ({
   confirmText,
   onCancel,
   onConfirm,
-  type,
 }) => {
   if (!isOpen) return;
   return createPortal(
@@ -30,11 +29,7 @@ const Modal = ({
         </div>
         <div className="flex flex-row gap-2">
           <div
-            className={
-              type === "error"
-                ? "flex flex-col cursor-pointer rounded-full w-[286px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00F49B]"
-                : "flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#E8FAF4]"
-            }
+            className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#E8FAF4]"
             onClick={() => {
               if (onCancel) {
                 onCancel();
@@ -44,20 +39,18 @@ const Modal = ({
           >
             {cancelText ?? "취소"}
           </div>
-          {type !== "error" && (
-            <Link
-              href="download"
-              className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00F49B] text-white"
-              onClick={() => {
-                if (onConfirm) {
-                  onConfirm();
-                }
-                setIsOpen((prev) => !prev);
-              }}
-            >
-              {confirmText ?? "앱 다운로드"}
-            </Link>
-          )}
+          <Link
+            href="download"
+            className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00F49B] text-white"
+            onClick={() => {
+              if (onConfirm) {
+                onConfirm();
+              }
+              setIsOpen((prev) => !prev);
+            }}
+          >
+            {confirmText ?? "앱 다운로드"}
+          </Link>
         </div>
       </div>
     </div>,
