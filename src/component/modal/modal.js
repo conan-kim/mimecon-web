@@ -15,15 +15,15 @@ const Modal = ({
   if (!isOpen) return;
   return createPortal(
     <div
-      className="absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/20"
+      className="absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/20 break-keep"
       onClick={() => {
         setIsOpen(false);
       }}
     >
-      <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px]">
+      <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-3">
           <div className="font-bold text-[18px]">{title}</div>
-          <div className="text-[16px] leading-[24px] text-[#444444]">
+          <div className="text-[16px] leading-[24px] text-[#444444] text-wrap">
             {description}
           </div>
         </div>
