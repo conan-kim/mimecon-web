@@ -28,7 +28,7 @@ const TalkVideoPlayer = ({
 
     // looping
     videoRef.current.addEventListener("ended", (event) => {
-      console.log(src, type, "hi");
+      // console.log(src, type, "hi");
       setTimeout(() => {
         try {
           onVideoEnded();

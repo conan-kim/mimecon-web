@@ -1,14 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-
-import LogoSvg from "@/public/logo.svg";
-import MuteSvg from "@/public/mute.svg";
-import UnmuteSvg from "@/public/unmuted.svg";
-import TimerSvg from "@/public/timer.svg";
-import MicSvg from "@/public/mic.svg";
-import SendSvg from "@/public/send.svg";
 import NicknameModal from "../component/modal/nicknameModal";
 import axiosInstance from "../../api/axiosInstance";
 import TalkVideoPlayer from "../component/talkVideoPlayer";
@@ -16,7 +8,20 @@ import { useSearchParams } from "next/navigation";
 import Modal from "../component/modal/modal";
 import { usePlatform } from "../../context/platformContext";
 
+import LogoSvg from "@/public/logo.svg";
+import MuteSvg from "@/public/mute.svg";
+import UnmuteSvg from "@/public/unmuted.svg";
+import TimerSvg from "@/public/timer.svg";
+import MicSvg from "@/public/mic.svg";
+import SendSvg from "@/public/send.svg";
+import InfoSvg from "@/public/info.svg";
+
 const TalkPage = () => {
+  const [isMicOpen, setIsMicOpen] = useState(false);
+  const [isSttOpen, setIsSttOpen] = useState(false);
+  const [micStream, setMicStream] = useState(null);
+  const [useVoice, setUseVoice] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
@@ -34,10 +39,21 @@ const TalkPage = () => {
 
   const searchParams = useSearchParams();
   const mimecon_id = searchParams.get("mimecon_id");
+  const dataFromWs = useRef([]);
+  const data = useRef([]);
+  const ws = useRef();
+
+  // 오디오 버퍼
+  const bufferSize = 256; // buffer size(512). multiply by two in encPCM function
+  const numChannels = 1; // channel count(only one channel)
+  const sampleRate = 16000; // samplerate
+
+  let audioContext;
+  let scriptProcessorNode;
+  let source;
 
   useEffect(() => {
     if (!mimecon_id) {
-      console.log("------");
       setIsErrorModalOpen(true);
       return;
     }
@@ -126,11 +142,15 @@ const TalkPage = () => {
       } = await axiosInstance.get(
         `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
       );
-      setIsConnected(true);
       setTimeLastReactedAt(new Date());
       setChatroomId(chat_room_id);
       setVideoUrl(live_url);
       setText(_text);
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        setIsConnected(true);
+      }, 3000);
     } catch (e) {
       console.log("error", e);
       setIsErrorModalOpen(true);
@@ -139,6 +159,7 @@ const TalkPage = () => {
 
   const endChatroom = async (session_expiration) => {
     try {
+      if (!chatroomId) return;
       await axiosInstance.get(
         `/guest/mimecon/end?chat_room_id=${chatroomId}&session_expiration=${session_expiration}`
       );
@@ -192,6 +213,146 @@ const TalkPage = () => {
     setText("");
   };
 
+  const connectStt = async () => {
+    console.log("connectStt");
+    try {
+      const _ws = new WebSocket(process.env.NEXT_PUBLIC_DEV_WSS_STT_URL);
+      ws.current = _ws;
+
+      const setupWebSocket = (wsInstance) => {
+        wsInstance.onopen = () => {
+          wsInstance.send(
+            JSON.stringify({
+              app_id: process.env.NEXT_PUBLIC_WS_CONNECT_APP_ID,
+              synapses_id: process.env.NEXT_PUBLIC_WS_CONNECT_SYNAPSES_ID,
+              owner: process.env.NEXT_PUBLIC_WS_CONNECT_OWNER,
+              model_name: process.env.NEXT_PUBLIC_WS_CONNECT_MODEL_NAME,
+            })
+          );
+        };
+
+        wsInstance.onmessage = (event) => {
+          console.log("event", event);
+          const message = event.data;
+          if (message == "No Available Workers") {
+            disconnectStt();
+            return;
+          }
+          if (message.length < 30) return;
+          const jsonData = JSON.parse(message);
+          console.log("jsonData", jsonData["transcript"]);
+          setText(jsonData["wordAlignment"].map((e) => e["word"]).join(" "));
+          const isFinal = jsonData["final"];
+          if (isFinal) {
+            setText(jsonData["transcript"]);
+          }
+        };
+
+        wsInstance.onerror = (event) => {
+          console.log("error", event);
+        };
+      };
+
+      setupWebSocket(ws.current);
+      await openMic();
+      setUseVoice(true);
+    } catch (e) {
+      console.log("e", e);
+    }
+  };
+
+  const disconnectStt = async () => {
+    await closeMic();
+    if (!ws?.current) return;
+    console.info("WebSocket 끊김");
+    if (ws.current.readyState === 1) {
+      ws?.current?.send("EOS");
+    }
+    ws?.current?.close();
+    setUseVoice(false);
+  };
+
+  const openMic = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      audioContext = new window.AudioContext({ sampleRate: sampleRate });
+      scriptProcessorNode = audioContext.createScriptProcessor(
+        bufferSize,
+        numChannels,
+        numChannels
+      );
+      source = audioContext.createMediaStreamSource(stream);
+      source.connect(scriptProcessorNode);
+      scriptProcessorNode.connect(audioContext.destination);
+      scriptProcessorNode.addEventListener("audioprocess", async (event) => {
+        var audioBuffer = event.inputBuffer;
+        var channelData = audioBuffer.getChannelData(0);
+        dataFromWs.current = [...dataFromWs.current, ...channelData];
+        data.current = [...data.current, ...channelData];
+        if (dataFromWs.current.length >= 2048) {
+          const chunk = dataFromWs.current.slice(0, 2048);
+          dataFromWs.current = [...dataFromWs.current.slice(2048)];
+          // console.log("event", chunk.length);
+          if (ws.current !== 0 && ws.current.readyState === 1) {
+            var pcm = encPCM(chunk);
+            ws.current.binaryType = "arraybuffer";
+            await ws.current.send(pcm);
+          }
+        }
+      });
+      // setMicStream(stream);
+      setIsMicOpen(true);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+    }
+  };
+
+  const closeMic = async () => {
+    console.log("close mic");
+    const _stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+    _stream.getTracks().forEach(function (track) {
+      console.log("stop..!");
+      track.stop();
+    });
+    // micStream.getTracks().forEach(function (track) {
+    //   console.log("stop..!");
+    //   track.stop();
+    // });
+    setMicStream(null);
+    if (source) {
+      source.disconnect();
+      source = null;
+    }
+    if (scriptProcessorNode) {
+      // scriptProcessorNode.removeEventListener();
+      scriptProcessorNode.disconnect();
+      scriptProcessorNode = null;
+    }
+    if (audioContext) {
+      await audioContext.close(); // 오디오 컨텍스트 종료
+      audioContext = null;
+    }
+  };
+
+  const f2PCM = (output, input) => {
+    var endian = true;
+    for (var i = 0, offset = 0; i < input.length; i++, offset += 2) {
+      var v = Math.max(-1, Math.min(1, input[i]));
+      output.setInt16(offset, v < 0 ? v * 0x8000 : v * 0x7fff, endian);
+    }
+  };
+
+  const encPCM = (samples) => {
+    var arrayBuff = new ArrayBuffer(samples.length * 2);
+    var dataView = new DataView(arrayBuff);
+    f2PCM(dataView, samples);
+    return dataView;
+  };
+
   return (
     <div className="relative flex flex-col h-[100vh] bg-black">
       <div className="flex flex-row justify-between items-center px-[12px] py-[8px]">
@@ -204,11 +365,27 @@ const TalkPage = () => {
             APP 다운로드
           </div>
         </Link>
-        <div className="cursor-pointer px-[12px] py-[8px] rounded-full border border-white/80">
+        <div
+          className="cursor-pointer px-[12px] py-[8px] rounded-full border border-white/80"
+          onClick={() => {
+            endChatroom(true);
+          }}
+        >
           <div className="text-white/80">대화종료</div>
         </div>
       </div>
-      <div className="flex flex-1 flex-col justify-between items-center w-full h-full pt-[8px]">
+      <div className="relative flex flex-1 flex-col justify-between items-center w-full h-full pt-[8px]">
+        {showToast && (
+          <div className="absolute z-20 top-0 bottom-0 left-0 right-0 w-full h-full flex items-center justify-center text-white">
+            <div className="flex flex-col justify-center items-center text-center gap-3 p-5 bg-[#222222] rounded-[12px] opacity-80">
+              <InfoSvg />
+              <div className="opacity-80 text-[14px]">
+                미미와 나눈 모든 이야기는{"\n"}보낸 사람이 볼 수 있으니
+                참고해주세요.
+              </div>
+            </div>
+          </div>
+        )}
         {isConnected && (
           <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center">
             <TalkVideoPlayer
@@ -232,6 +409,7 @@ const TalkPage = () => {
                       ? "py-[8px] px-[12px] flex flex-row items-center justify-center bg-[#EB4D4D] rounded-full text-white gap-2"
                       : "py-[8px] px-[12px] flex flex-row items-center justify-center bg-black/60 rounded-full text-white gap-2"
                   }
+                  onClick={closeMic}
                 >
                   <TimerSvg />
                   <div>{formatTime(time)}</div>
@@ -248,7 +426,10 @@ const TalkPage = () => {
                     onChange={onChange}
                     value={inputText}
                   />
-                  <div className="cursor-pointer" onClick={sendText}>
+                  <div
+                    className="cursor-pointer"
+                    onClick={inputText ? sendText : connectStt}
+                  >
                     {inputText ? <SendSvg /> : <MicSvg />}
                   </div>
                 </div>

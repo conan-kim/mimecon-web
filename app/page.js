@@ -29,7 +29,7 @@ const Page = () => {
           2-Depth 페이지 (미미톡)
         </Link>
         <Link
-          href="talk?mimecon_id=669603135c7c034c8416727d"
+          href="talk?mimecon_id=66979fc21a76e93a8cb32aed"
           className="cursor-pointer"
         >
           대화하기 페이지
