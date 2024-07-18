@@ -122,7 +122,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
           <div
             className={
               valid && !isDuplicated
-                ? "flex flex-col cursor-pointer rounded-full w-[295px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00F49B] text-white"
+                ? "flex flex-col cursor-pointer rounded-full w-[295px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00E09B] text-white"
                 : "flex flex-col rounded-full w-[295px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#DDDEDE] text-white"
             }
             onClick={() => {

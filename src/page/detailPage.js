@@ -15,6 +15,7 @@ import UnmuteSvg from "@/public/unmuted.svg";
 import axios from "axios";
 import { convertStringToNum } from "../../utils/math";
 import InterActionModal from "../component/modal/interactionModal";
+import Link from "next/link";
 
 const DetailPage = () => {
   const [isPre, setIsPre] = useState(true);
@@ -193,7 +194,7 @@ const DetailPage = () => {
     if (!data) return;
     if (isMimecon) {
       return (
-        <div className="flex flex-col justify-center items-start text-white font-bold text-[14px] tracking-tight">
+        <div className="flex flex-col justify-center items-start text-white font-bold text-[14px] tracking-tight w-full">
           <div className="flex flex-row gap-2">
             <div
               className="h-5 w-5 rounded-full bg-white"
@@ -298,26 +299,31 @@ const DetailPage = () => {
             {renderVtt()}
             <div className="flex flex-row items-center justify-center gap-2 pt-2">
               <div
-                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-[#00F49B]"
+                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00E09B] bg-[#00E09B]"
                 onClick={openAppDownloadModal}
               >
                 <AISvg />
                 <div className="text-[14px] font-semibold">대화요약</div>
               </div>
-              <div
-                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00F49B] bg-black/20"
-                onClick={openAppDownloadModal}
+              <Link
+                href={
+                  isMimecon
+                    ? "talk?mimecon_id=" + id
+                    : "talk?mimecon_id=" + data?.mimecon?.id
+                }
+                className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00E09B] bg-black/20"
+                // onClick={openAppDownloadModal}
               >
                 <TalkFilledSvg />
-                <div className="text-[#00F49B] text-[14px] font-semibold">
+                <div className="text-[#00E09B] text-[14px] font-semibold">
                   나도 대화해볼래
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
           <div className="h-[1px] w-full bg-[#8a8a8a]">
             <div
-              className="h-[1px] bg-[#00F49B]"
+              className="h-[1px] bg-[#00E09B]"
               style={{ width: progress.toFixed(2).toString() + "%" }}
             />
           </div>
