@@ -5,12 +5,14 @@ import { motion } from "framer-motion";
 import axiosInstance from "../../../api/axiosInstance";
 import CloseSvg from "@/public/close.svg";
 
-const TermsAndCondition = ({ isOpen, setIsOpen, onCompleted }) => {
+const TermsAndCondition = ({ isOpen, setIsOpen }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     fetchData();
-  }, []);
+  }, [isOpen]);
 
   const fetchData = async () => {
     try {
