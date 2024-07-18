@@ -204,7 +204,7 @@ const DetailPage = () => {
                 backgroundPosition: "center",
               }}
             />
-            <div>{data?.title}</div>
+            <div className="text-wrap break-keep">{data?.title}</div>
           </div>
         </div>
       );
