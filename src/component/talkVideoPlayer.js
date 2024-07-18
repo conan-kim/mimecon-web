@@ -17,14 +17,18 @@ const TalkVideoPlayer = ({
 
   useEffect(() => {
     if (type === "m3u8" && Hls.isSupported()) {
-      if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
-        // This will run in safari, where HLS is supported natively
-        videoRef.current.src = src;
-      } else if (type === "m3u8" && Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(src);
-        hls.attachMedia(videoRef.current);
-      }
+      // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+      //   // This will run in safari, where HLS is supported natively
+      //   videoRef.current.src = src;
+      //   return
+      // } else if (type === "m3u8" && Hls.isSupported()) {
+      //   const hls = new Hls();
+      //   hls.loadSource(src);
+      //   hls.attachMedia(videoRef.current);
+      // }
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(videoRef.current);
     }
 
     // looping
