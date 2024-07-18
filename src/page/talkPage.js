@@ -29,6 +29,7 @@ const TalkPage = () => {
   const [isMicOpen, setIsMicOpen] = useState(false);
   const [isSttOpen, setIsSttOpen] = useState(false);
   const [micStream, setMicStream] = useState(null);
+  const [holdMic, setHoldMic] = useState(false);
   const [useVoice, setUseVoice] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState(VOICE_STATUS.LISTENING);
   const [showToast, setShowToast] = useState(false);
@@ -136,11 +137,7 @@ const TalkPage = () => {
       );
       if (available_chatroom && available_link) {
         setIsNicknameModalOpen(true);
-      } else if (!available_chatroom) {
-        // TODO: unavailable_chatroom
-        setIsErrorModalOpen(true);
-      } else if (!available_link) {
-        // TODO: unavailable_link
+      } else {
         setIsErrorModalOpen(true);
       }
     } catch (e) {
@@ -473,9 +470,9 @@ const TalkPage = () => {
         )}
       </div>
     ) : (
-      <div className="flex flex-row rounded-full items-center justify-between w-full p-[20px] bg-black/60">
+      <div className="flex flex-row rounded-full items-center justify-between w-full p-[20px] bg-black/60 border border-[#ffffff29] backdrop-blur-lg">
         <input
-          className="flex-1 w-full bg-transparent border-none focus:outline-none border-transparent focus:border-transparent focus:ring-0 text-white"
+          className="flex-1 w-full bg-transparent border-none focus:outline-none border-transparent focus:border-transparent focus:ring-0 text-white placeholder-white placeholder-opacity-30"
           placeholder="메세지 입력"
           onChange={onChange}
           value={inputText}
@@ -508,7 +505,7 @@ const TalkPage = () => {
             setIsEndModalOpen(true);
           }}
         >
-          <div className="text-white/80">대화종료</div>
+          <div className="text-white/80 text-[13px]">대화종료</div>
         </div>
       </div>
       <div className="relative flex flex-1 flex-col justify-between items-center w-full h-full pt-[8px]">
@@ -549,7 +546,7 @@ const TalkPage = () => {
                   onClick={uploadWavFile}
                 >
                   <TimerSvg />
-                  <div>{formatTime(time)}</div>
+                  <div className="text-[14px]">{formatTime(time)}</div>
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center p-[12px] w-full gap-4">
@@ -579,7 +576,7 @@ const TalkPage = () => {
         isOpen={isEndModalOpen}
         setIsOpen={setIsEndModalOpen}
         onConfirm={() => {
-          endChatroom(true);
+          endChatroom(false);
         }}
       />
       <Modal
