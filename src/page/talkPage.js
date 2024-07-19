@@ -457,7 +457,7 @@ const TalkPage = () => {
 
   const renderInput = () => {
     return useVoice ? (
-      <div className="flex flex-row rounded-full p-2 bg-gradient-to-r from-[#03de9d] to-[#05dfc2] text-white">
+      <div className="flex flex-row rounded-full px-2 py-1 bg-gradient-to-r from-[#03de9d] to-[#05dfc2] text-white">
         {voiceStatus === VOICE_STATUS.LISTENING ? (
           <div className="flex flex-row items-center justify-center pr-[12px]">
             <div className="">
@@ -466,11 +466,13 @@ const TalkPage = () => {
             <div>듣고있어요</div>
           </div>
         ) : (
-          <Lottie loop animationData={AskJson} play />
+          <div className="py-1">
+            <Lottie loop animationData={AskJson} play />
+          </div>
         )}
       </div>
     ) : (
-      <div className="flex flex-row rounded-full items-center justify-between w-full p-[20px] bg-black/60 border border-[#ffffff29] backdrop-blur-lg">
+      <div className="flex flex-row rounded-full items-center justify-between w-full px-[20px] py-[12px] bg-black/60 border border-[#ffffff29] backdrop-blur-lg">
         <input
           className="flex-1 w-full bg-transparent border-none focus:outline-none border-transparent focus:border-transparent focus:ring-0 text-white placeholder-white placeholder-opacity-30"
           placeholder="메세지 입력"
