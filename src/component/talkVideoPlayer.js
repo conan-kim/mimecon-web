@@ -10,6 +10,8 @@ const TalkVideoPlayer = ({
   setIndex,
   type,
   loop,
+  stop,
+  onVideoPlay,
   onVideoEnded,
   ...rest
 }) => {
@@ -31,19 +33,38 @@ const TalkVideoPlayer = ({
       hls.attachMedia(videoRef.current);
     }
 
-    // looping
-    videoRef.current.addEventListener("ended", (event) => {
-      // console.log(src, type, "hi");
-      setTimeout(() => {
-        try {
-          onVideoEnded();
-          videoRef.current.play();
-        } catch (e) {
-          console.log("e", e);
-        }
-      }, 500);
-    });
+    videoRef.current.addEventListener("play", _onVideoPlay);
+    return () => {
+      videoRef.current.removeEventListener("play", _onVideoPlay);
+    };
   }, [src]);
+
+  useEffect(() => {
+    videoRef.current.addEventListener("ended", _onVideoEnded);
+    return () => {
+      videoRef.current.removeEventListener("ended", _onVideoEnded);
+    };
+  }, [stop]);
+
+  const _onVideoPlay = () => {
+    if (onVideoPlay) {
+      onVideoPlay();
+    }
+  };
+
+  const _onVideoEnded = (event) => {
+    if (stop) return;
+    console.log(111111, stop);
+    // console.log(src, type, "hi");
+    setTimeout(() => {
+      try {
+        onVideoEnded();
+        videoRef.current.play();
+      } catch (e) {
+        console.log("e", e);
+      }
+    }, 500);
+  };
 
   return (
     <div className="flex flex-1 w-full h-full justify-center items-center">

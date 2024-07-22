@@ -26,10 +26,10 @@ const TalkPage = () => {
     UPLOADING: 1,
     REPLYING: 2,
   };
-  const [isMicOpen, setIsMicOpen] = useState(false);
-  const [isSttOpen, setIsSttOpen] = useState(false);
-  const [micStream, setMicStream] = useState(null);
-  const [holdMic, setHoldMic] = useState(false);
+  // const [isMicOpen, setIsMicOpen] = useState(false);
+  // const [isSttOpen, setIsSttOpen] = useState(false);
+  // const [micStream, setMicStream] = useState(null);
+  // const [holdMic, setHoldMic] = useState(false);
   const [useVoice, setUseVoice] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState(VOICE_STATUS.LISTENING);
   const [showToast, setShowToast] = useState(false);
@@ -42,18 +42,21 @@ const TalkPage = () => {
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
   const [inputText, setInputText] = useState("");
+  const [voiceText, setVoiceText] = useState("");
   const [chatroomId, setChatroomId] = useState("");
   const [time, setTime] = useState(600);
   const [timeLastReactedAt, setTimeLastReactedAt] = useState(new Date());
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [audioFile, setAudioFile] = useState(null);
+  const [stopAll, setStopAll] = useState(false);
 
   const router = useRouter();
   const { getDownloadLink } = usePlatform();
 
   const searchParams = useSearchParams();
   const mimecon_id = searchParams.get("mimecon_id");
+  const holdMicRef = useRef(false);
   const dataFromWs = useRef([]);
   const data = useRef([]);
   const ws = useRef();
@@ -79,7 +82,12 @@ const TalkPage = () => {
   useEffect(() => {
     if (!isConnected) return;
     const timer = setInterval(() => {
-      setTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+      setTime((prevTime) => {
+        if (prevTime === 0 && !stopAll) {
+          setStopAll(true);
+        }
+        return prevTime > 0 ? prevTime - 1 : 0;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
@@ -182,6 +190,7 @@ const TalkPage = () => {
   };
 
   const sendText = async () => {
+    if (stopAll) return;
     try {
       const params = {
         chat_room_id: chatroomId,
@@ -201,13 +210,17 @@ const TalkPage = () => {
   };
 
   const sendVoice = async () => {
+    if (stopAll) return;
     try {
+      holdMicRef.current = true;
+      setTimeout(() => {}, 1000);
       setVoiceStatus(VOICE_STATUS.UPLOADING);
       const params = {
-        chat_room_id: chatroomId,
-        text: inputText,
         ...audioFile,
+        chat_room_id: chatroomId,
+        text: voiceText,
       };
+      console.log("hello", params, audioFile, voiceText);
       const { live_url, text: _text } = await axiosInstance.post(
         "/guest/mimecon/talk",
         params
@@ -216,6 +229,7 @@ const TalkPage = () => {
       setVideoUrl(live_url);
       setText(_text);
       setInputText("");
+      setVoiceText("");
       setTimeLastReactedAt(new Date());
     } catch (e) {
       console.log("error", e);
@@ -226,14 +240,30 @@ const TalkPage = () => {
     joinChatroom(guest_id, nick_name);
   };
 
+  const onVideoPlay = () => {
+    console.log("onVideoPlay", videoUrl === idleUrl);
+    if (videoUrl === idleUrl) {
+      holdMicRef.current = false;
+      return;
+    }
+    holdMicRef.current = true;
+    // if (!holdMic) {
+    // }
+  };
+
   const onVideoEnded = () => {
-    if (videoUrl === idleUrl) return;
+    console.log("onVideoEnded", videoUrl === idleUrl);
+    holdMicRef.current = false;
+    if (videoUrl === idleUrl) {
+      return;
+    }
     setVideoUrl(idleUrl);
     setText("");
     setVoiceStatus(VOICE_STATUS.LISTENING);
   };
 
   const connectStt = async () => {
+    if (stopAll) return;
     console.log("connectStt");
     try {
       const _ws = new WebSocket(process.env.NEXT_PUBLIC_DEV_WSS_STT_URL);
@@ -264,8 +294,9 @@ const TalkPage = () => {
           const isFinal = jsonData["final"];
           const _text = jsonData["transcript"];
           if (isFinal && _text.length > 2) {
+            setVoiceText(_text);
             setText(_text);
-            uploadAudioAndSend();
+            uploadAudioAndSend(_text);
           }
         };
 
@@ -294,6 +325,7 @@ const TalkPage = () => {
   };
 
   const openMic = async () => {
+    if (stopAll) return;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -308,6 +340,7 @@ const TalkPage = () => {
       source.connect(scriptProcessorNode);
       scriptProcessorNode.connect(audioContext.destination);
       scriptProcessorNode.addEventListener("audioprocess", async (event) => {
+        if (holdMicRef.current) return;
         var audioBuffer = event.inputBuffer;
         var channelData = audioBuffer.getChannelData(0);
         dataFromWs.current = [...dataFromWs.current, ...channelData];
@@ -324,7 +357,7 @@ const TalkPage = () => {
         }
       });
       // setMicStream(stream);
-      setIsMicOpen(true);
+      // setIsMicOpen(true);
     } catch (err) {
       console.error("Error accessing microphone:", err);
     }
@@ -343,7 +376,7 @@ const TalkPage = () => {
     //   console.log("stop..!");
     //   track.stop();
     // });
-    setMicStream(null);
+    // setMicStream(null);
     if (source) {
       source.disconnect();
       source = null;
@@ -372,19 +405,6 @@ const TalkPage = () => {
     var dataView = new DataView(arrayBuff);
     f2PCM(dataView, samples);
     return dataView;
-  };
-
-  const saveWavFile = () => {
-    const wavData = encodeWAV(data.current);
-    const blob = new Blob([wavData], { type: "audio/wav" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = "audio.wav";
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   const uploadWavFile = async () => {
@@ -446,7 +466,9 @@ const TalkPage = () => {
     return view;
   };
 
-  const uploadAudioAndSend = async () => {
+  const uploadAudioAndSend = async (_text) => {
+    if (stopAll) return;
+    console.log("text", voiceText, "/", _text);
     try {
       await uploadWavFile();
       await sendVoice();
@@ -498,7 +520,8 @@ const TalkPage = () => {
         >
           <LogoSvg width={40} height={40} />
           <div className="font-bold text-[14px] text-[#03FFB0]">
-            APP 다운로드
+            APP 다운로드 {holdMicRef.current ? "HOOLD MIC" : "RELEASE MIC"}{" "}
+            {voiceText}
           </div>
         </Link>
         <div
@@ -529,6 +552,8 @@ const TalkPage = () => {
               type="m3u8"
               muted={isMuted}
               loop={true}
+              stop={stopAll}
+              onVideoPlay={onVideoPlay}
               onVideoEnded={onVideoEnded}
             />
             <div className="absolute top-0 bottom-0 flex flex-col w-full h-full items-center justify-between">
