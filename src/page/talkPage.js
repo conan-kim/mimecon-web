@@ -39,6 +39,7 @@ const TalkPage = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
   const [isAbsenceModalOpen, setIsAbsenceModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
   const [inputText, setInputText] = useState("");
@@ -78,6 +79,12 @@ const TalkPage = () => {
     fetchMimecon();
     connectChatroom();
   }, []);
+
+  useEffect(() => {
+    if (voiceText) {
+      uploadAudioAndSend(voiceText);
+    }
+  }, [voiceText]);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -191,7 +198,9 @@ const TalkPage = () => {
 
   const sendText = async () => {
     if (stopAll) return;
+    if (isLoading) return;
     try {
+      setIsLoading(true);
       const params = {
         chat_room_id: chatroomId,
         text: inputText,
@@ -200,11 +209,13 @@ const TalkPage = () => {
         "/guest/mimecon/talk",
         params
       );
+      setIsLoading(false);
       setVideoUrl(live_url);
       setText(_text);
       setInputText("");
       setTimeLastReactedAt(new Date());
     } catch (e) {
+      setIsLoading(false);
       console.log("error", e);
     }
   };
@@ -296,7 +307,7 @@ const TalkPage = () => {
           if (isFinal && _text.length > 2) {
             setVoiceText(_text);
             setText(_text);
-            uploadAudioAndSend(_text);
+            // uploadAudioAndSend(_text);
           }
         };
 
@@ -576,9 +587,19 @@ const TalkPage = () => {
                   <div className="text-[14px]">{formatTime(time)}</div>
                 </div>
               </div>
+              <div
+                className="flex flex-1 h-full w-full"
+                onClick={() => {
+                  setUseVoice(false);
+                }}
+              ></div>
               <div className="flex flex-col items-center justify-center p-[12px] w-full gap-4">
                 <div className="bg-black/60 text-white text-[18px] max-w-[400px] text-center text-wrap break-keep">
-                  {text}
+                  {isLoading ? (
+                    <Lottie loop animationData={ListenJson} play width={40} />
+                  ) : (
+                    text
+                  )}
                 </div>
                 {renderInput()}
               </div>
