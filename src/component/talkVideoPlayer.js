@@ -33,9 +33,22 @@ const TalkVideoPlayer = ({
       hls.attachMedia(videoRef.current);
     }
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        videoRef.current.removeEventListener("ended", _onVideoEnded);
+        videoRef.current.pause();
+      } else {
+        videoRef.current.addEventListener("ended", _onVideoEnded);
+        videoRef.current.play();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     videoRef.current.addEventListener("play", _onVideoPlay);
     return () => {
       videoRef.current.removeEventListener("play", _onVideoPlay);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [src]);
 

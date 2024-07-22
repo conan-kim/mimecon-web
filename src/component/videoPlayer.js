@@ -28,8 +28,17 @@ const VideoPlayer = ({
       hls.attachMedia(videoRef.current);
     }
 
-    // looping
-    videoRef.current.addEventListener("ended", (event) => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        videoRef.current.removeEventListener("ended", onVideoEnded);
+        videoRef.current.pause();
+      } else {
+        videoRef.current.addEventListener("ended", onVideoEnded);
+        videoRef.current.play();
+      }
+    };
+
+    const onVideoEnded = (event) => {
       if (!loop) return;
       setTimeout(() => {
         try {
@@ -38,7 +47,12 @@ const VideoPlayer = ({
           console.log("e", e);
         }
       }, 500);
-    });
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // looping
+    videoRef.current.addEventListener("ended", onVideoEnded);
 
     videoRef.current.addEventListener("timeupdate", (event) => {
       if (!setProgress) return;
@@ -51,6 +65,10 @@ const VideoPlayer = ({
         (videoRef?.current?.currentTime / videoRef?.current?.duration) * 100
       );
     });
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [src, type]);
 
   return (
