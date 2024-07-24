@@ -6,7 +6,6 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --vh: 1vh;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,7 +18,9 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  height: calc(var(--vh, 1vh) * 100);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* height: calc(var(--vh, 1vh) * 100); */
   /* background: linear-gradient(
       to bottom,
       transparent,
