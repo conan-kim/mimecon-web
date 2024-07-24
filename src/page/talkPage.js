@@ -277,7 +277,7 @@ const TalkPage = () => {
     if (stopAll) return;
     console.log("connectStt");
     try {
-      const _ws = new WebSocket(process.env.NEXT_PUBLIC_DEV_WSS_STT_URL);
+      const _ws = new WebSocket(process.env.NEXT_PUBLIC_WSS_STT_URL);
       ws.current = _ws;
 
       const setupWebSocket = (wsInstance) => {
