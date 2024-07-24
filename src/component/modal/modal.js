@@ -17,6 +17,7 @@ const Modal = ({
   const { getDownloadLink } = usePlatform();
 
   if (!isOpen) return;
+  if (typeof window === "undefined") return null;
   return createPortal(
     <div
       className="absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/20 break-keep"
