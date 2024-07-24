@@ -531,8 +531,7 @@ const TalkPage = () => {
         >
           <LogoSvg width={40} height={40} />
           <div className="font-bold text-[14px] text-[#03FFB0]">
-            APP 다운로드 {holdMicRef.current ? "HOOLD MIC" : "RELEASE MIC"}{" "}
-            {voiceText}
+            APP 다운로드
           </div>
         </Link>
         <div
