@@ -10,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="whitespace-pre relative h-[100vh] break-keep">
+      <body className="whitespace-pre relative h-svh break-keep">
         <LoadingProvider>
           <PlatformProvider>
             <div className="max-w-screen-md m-auto">{children}</div>
