@@ -51,7 +51,7 @@ const DownloadPage = () => {
 
   return (
     <div className="relative flex flex-1 flex-col">
-      <div className="flex flex-col h-[100vh] bg-black items-center justify-start">
+      <div className="flex flex-col h-svh bg-black items-center justify-start">
         <div className="w-full aspect-square">
           <Image
             src={"/download-bg.png"}

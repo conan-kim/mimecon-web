@@ -265,7 +265,7 @@ const DetailPage = () => {
   // }
 
   return (
-    <div className="relative flex flex-1 flex-col h-[100vh]">
+    <div className="relative flex flex-1 flex-col h-svh">
       <div className="bg-black w-full h-full">
         {!isPre && data && (
           <VideoPlayer

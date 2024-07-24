@@ -523,7 +523,7 @@ const TalkPage = () => {
   };
 
   return (
-    <div className="relative flex flex-col h-[100vh] bg-black">
+    <div className="relative flex flex-col h-svh bg-black">
       <div className="flex flex-row justify-between items-center px-[12px] py-[8px]">
         <Link
           href={getDownloadLink()}
