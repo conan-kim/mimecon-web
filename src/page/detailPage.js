@@ -211,7 +211,7 @@ const DetailPage = () => {
     }
 
     return (
-      <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll">
+      <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll scrollbar-hide">
         {vtt.map((_value, _idx) => {
           const isNow =
             now > convertStringToNum(_value.startedAt) &&
