@@ -26,8 +26,6 @@ const VideoPlayer = ({
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      videoRef.current.src = src;
     }
 
     const handleVisibilityChange = () => {
