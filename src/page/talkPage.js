@@ -81,10 +81,19 @@ const TalkPage = () => {
   }, []);
 
   useEffect(() => {
-    if (voiceText) {
-      uploadAudioAndSend(voiceText);
+    if (!voiceText) {
+      return;
     }
+
+    uploadWavFile();
   }, [voiceText]);
+
+  useEffect(() => {
+    if (!voiceText || !audioFile) {
+      return;
+    }
+    sendVoice();
+  }, [voiceText, audioFile]);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -231,7 +240,9 @@ const TalkPage = () => {
         chat_room_id: chatroomId,
         text: voiceText,
       };
-      console.log("hello", params, audioFile, voiceText);
+      if (!audioFile || !voiceText) {
+        return;
+      }
       const { live_url, text: _text } = await axiosInstance.post(
         "/guest/mimecon/talk",
         params
@@ -241,6 +252,7 @@ const TalkPage = () => {
       setText(_text);
       setInputText("");
       setVoiceText("");
+      setAudioFile(null);
       setTimeLastReactedAt(new Date());
     } catch (e) {
       console.log("error", e);
@@ -252,7 +264,6 @@ const TalkPage = () => {
   };
 
   const onVideoPlay = () => {
-    console.log("onVideoPlay", videoUrl === idleUrl);
     if (videoUrl === idleUrl) {
       holdMicRef.current = false;
       return;
@@ -263,7 +274,6 @@ const TalkPage = () => {
   };
 
   const onVideoEnded = () => {
-    console.log("onVideoEnded", videoUrl === idleUrl);
     holdMicRef.current = false;
     if (videoUrl === idleUrl) {
       return;
@@ -307,7 +317,6 @@ const TalkPage = () => {
           if (isFinal && _text.length > 2) {
             setVoiceText(_text);
             setText(_text);
-            // uploadAudioAndSend(_text);
           }
         };
 
@@ -375,12 +384,10 @@ const TalkPage = () => {
   };
 
   const closeMic = async () => {
-    console.log("close mic");
     const _stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
     _stream.getTracks().forEach(function (track) {
-      console.log("stop..!");
       track.stop();
     });
     // micStream.getTracks().forEach(function (track) {
@@ -420,6 +427,7 @@ const TalkPage = () => {
 
   const uploadWavFile = async () => {
     try {
+      console.log("sound data length:", data.current.length);
       const wavData = encodeWAV(data.current);
       const blob = new Blob([wavData], { type: "audio/wav" });
       const formData = new FormData();
@@ -433,6 +441,7 @@ const TalkPage = () => {
           },
         }
       );
+      console.log("audio uploaded with:", res);
       dataFromWs.current = [];
       data.current = [];
       setAudioFile(res);
@@ -477,9 +486,9 @@ const TalkPage = () => {
     return view;
   };
 
-  const uploadAudioAndSend = async (_text) => {
+  const uploadAudioAndSend = async () => {
     if (stopAll) return;
-    console.log("text", voiceText, "/", _text);
+    console.log("text:", voiceText, "/audio:", data.current.length);
     try {
       await uploadWavFile();
       await sendVoice();
@@ -580,7 +589,6 @@ const TalkPage = () => {
                       ? "py-[8px] px-[12px] flex flex-row items-center justify-center bg-[#EB4D4D] rounded-full text-white gap-2"
                       : "py-[8px] px-[12px] flex flex-row items-center justify-center bg-black/60 rounded-full text-white gap-2"
                   }
-                  onClick={uploadWavFile}
                 >
                   <TimerSvg />
                   <div className="text-[14px]">{formatTime(time)}</div>

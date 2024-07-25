@@ -49,7 +49,7 @@ const TalkVideoPlayer = ({
 
     videoRef.current.addEventListener("play", _onVideoPlay);
     return () => {
-      videoRef.current.removeEventListener("play", _onVideoPlay);
+      videoRef.current?.removeEventListener("play", _onVideoPlay);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [src]);
@@ -57,7 +57,7 @@ const TalkVideoPlayer = ({
   useEffect(() => {
     videoRef.current.addEventListener("ended", _onVideoEnded);
     return () => {
-      videoRef.current.removeEventListener("ended", _onVideoEnded);
+      videoRef.current?.removeEventListener("ended", _onVideoEnded);
     };
   }, [stop]);
 
@@ -69,8 +69,6 @@ const TalkVideoPlayer = ({
 
   const _onVideoEnded = (event) => {
     if (stop) return;
-    console.log(111111, stop);
-    // console.log(src, type, "hi");
     setTimeout(() => {
       try {
         onVideoEnded();

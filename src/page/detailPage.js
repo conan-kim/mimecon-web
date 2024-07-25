@@ -69,7 +69,6 @@ const DetailPage = () => {
       if (!data || isMimecon) return;
       const _vttData = data?.title_url;
       const { data: _vttString } = await axios.get(_vttData);
-      console.log("vttString", _vttString);
       let _result = [];
       let _tmp = { startedAt: "", endedAt: "", content: "", isUser: false };
       _vttString
@@ -79,7 +78,6 @@ const DetailPage = () => {
           return !!value;
         })
         .map((item, index) => {
-          console.log("item", item, index % 3);
           if (index % 3 === 0) {
             _tmp = { startedAt: "", endedAt: "", content: "", isUser: false };
           }
