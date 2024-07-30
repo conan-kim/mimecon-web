@@ -566,16 +566,18 @@ const TalkPage = () => {
         )}
         {isConnected && (
           <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center">
-            <TalkVideoPlayer
-              src={videoUrl}
-              type="m3u8"
-              muted={isMuted}
-              loop={true}
-              stop={stopAll}
-              onVideoPlay={onVideoPlay}
-              onVideoEnded={onVideoEnded}
-            />
-            <div className="absolute top-0 bottom-0 flex flex-col w-full h-full items-center justify-between">
+            <div className="absolute z-[2] bg-black w-full h-full flex items-center justify-center overflow-hidden">
+              <TalkVideoPlayer
+                src={videoUrl}
+                type="m3u8"
+                muted={isMuted}
+                loop
+                stop={stopAll}
+                onVideoPlay={onVideoPlay}
+                onVideoEnded={onVideoEnded}
+              />
+            </div>
+            <div className="absolute z-[10] top-0 bottom-0 flex flex-col w-full h-full items-center justify-between">
               <div className="flex flex-row justify-between items-center p-[12px] w-full">
                 <div
                   className="w-8 h-8 flex flex-col items-center justify-center bg-black/60 rounded-full cursor-pointer"

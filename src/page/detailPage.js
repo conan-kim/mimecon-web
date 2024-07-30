@@ -116,6 +116,7 @@ const DetailPage = () => {
             style={{
               backgroundImage: "url(" + data?.user?.profile_img_url + ")",
               backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           />
         ) : (
@@ -126,6 +127,7 @@ const DetailPage = () => {
                 backgroundImage:
                   "url(" + data?.mimecon?.user?.profile_img_url + ")",
                 backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             />
             <div className="z-10 h-8 w-8 rounded-full bg-black ml-[-30px]" />
@@ -135,6 +137,7 @@ const DetailPage = () => {
                 backgroundImage:
                   "url(" + data?.mimecon?.user?.profile_img_url + ")",
                 backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             />
           </div>
@@ -209,7 +212,7 @@ const DetailPage = () => {
     }
 
     return (
-      <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll scrollbar-hide">
+      <div className="flex flex-col justify-start items-start text-white max-h-[140px] gap-1 tracking-tight overflow-y-scroll scrollbar-hide w-full">
         {vtt.map((_value, _idx) => {
           const isNow =
             now > convertStringToNum(_value.startedAt) &&
@@ -239,7 +242,13 @@ const DetailPage = () => {
                   }}
                 />
               )}
-              <div className={isNow ? "font-bold" : "opacity-60"}>
+              <div
+                className={
+                  isNow
+                    ? "font-bold text-wrap break-keep"
+                    : "opacity-60 text-wrap break-keep"
+                }
+              >
                 {_value.content}
               </div>
             </div>
@@ -264,7 +273,7 @@ const DetailPage = () => {
 
   return (
     <div className="relative flex flex-1 flex-col h-svh">
-      <div className="bg-black w-full h-full">
+      <div className="bg-black w-full h-full flex items-center justify-center overflow-hidden">
         {!isPre && data && (
           <VideoPlayer
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}

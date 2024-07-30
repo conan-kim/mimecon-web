@@ -80,16 +80,14 @@ const TalkVideoPlayer = ({
   };
 
   return (
-    <div className="flex flex-1 w-full h-full justify-center items-center">
-      <video
-        ref={videoRef}
-        className="h-full"
-        autoPlay
-        playsInline
-        preload="auto"
-        {...rest}
-      />
-    </div>
+    <video
+      ref={videoRef}
+      className="w-full h-auto"
+      autoPlay
+      playsInline
+      preload="auto"
+      {...rest}
+    />
   );
 };
 

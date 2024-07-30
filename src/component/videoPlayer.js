@@ -74,7 +74,7 @@ const VideoPlayer = ({
   return (
     <video
       ref={videoRef}
-      className="w-full h-full"
+      className="w-full h-auto"
       autoPlay
       playsInline
       preload="auto"
