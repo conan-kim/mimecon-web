@@ -10,7 +10,7 @@ const TalkCompleteModal = ({ isOpen, setIsOpen, onConfirm }) => {
   if (typeof window === "undefined") return null;
   return createPortal(
     <div
-      className="absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/20 break-keep"
+      className="z-50 absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/20 break-keep"
       onClick={() => {
         setIsOpen(false);
       }}

@@ -351,13 +351,18 @@ const TalkPage = () => {
         audio: true,
       });
       audioContext = new window.AudioContext({ sampleRate: sampleRate });
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0.5;
       scriptProcessorNode = audioContext.createScriptProcessor(
         bufferSize,
         numChannels,
         numChannels
       );
+
       source = audioContext.createMediaStreamSource(stream);
-      source.connect(scriptProcessorNode);
+      source.connect(gainNode);
+      gainNode.connect(scriptProcessorNode);
+
       scriptProcessorNode.connect(audioContext.destination);
       scriptProcessorNode.addEventListener("audioprocess", async (event) => {
         if (holdMicRef.current) return;
@@ -520,6 +525,13 @@ const TalkPage = () => {
           placeholder="메세지 입력"
           onChange={onChange}
           value={inputText}
+          onKeyDown={(event) => {
+            if (!inputText) return;
+            if (event.key === "Enter") {
+              console.log("hello");
+              // sendText();
+            }
+          }}
         />
         <div
           className="cursor-pointer"

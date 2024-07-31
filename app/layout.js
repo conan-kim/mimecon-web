@@ -10,12 +10,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="whitespace-pre relative h-svh break-keep">
+      <body className="whitespace-pre relative h-svh break-keep bg-black">
         <LoadingProvider>
           <PlatformProvider>
             <div className="max-w-screen-md m-auto">{children}</div>
-            <div id="modal-root" />
-            <div id="tnc" />
+            <div id="modal-root" className="z-50" />
+            <div id="tnc" className="z-50" />
           </PlatformProvider>
         </LoadingProvider>
       </body>

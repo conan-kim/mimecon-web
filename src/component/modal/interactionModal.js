@@ -13,7 +13,7 @@ const InterActionModal = ({ isOpen, setIsOpen, onConfirm }) => {
   if (typeof window === "undefined") return null;
 
   return createPortal(
-    <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/80 gap-4 break-keep">
+    <div className="z-50 absolute top-0 bottom-0 left-0 right-0 flex flex-1 flex-col items-center justify-center bg-black/80 gap-4 break-keep">
       <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-3 items-center justify-center">
           <LogoSvg width={80} height={80} />
