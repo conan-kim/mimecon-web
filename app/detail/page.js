@@ -18,6 +18,10 @@ export async function generateMetadata({ params, searchParams }, parent) {
     openGraph: {
       title: "미미콘",
       description: "여기를 눌러 미미콘을 즐겨보세요!",
+      type: "article",
+      image: isMimecon
+        ? data?.mime?.og_img_url
+        : data?.mimecon?.mime?.og_img_url,
       images: [
         isMimecon ? data?.mime?.og_img_url : data?.mimecon?.mime?.og_img_url,
       ],
