@@ -17,7 +17,7 @@ const TalkCompleteModal = ({ isOpen, setIsOpen, onConfirm }) => {
     >
       <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-3">
-          <div className="font-bold text-[18px]">
+          <div className="text-[#222222] font-bold text-[18px]">
             미미콘과 즐거운 대화 나누셨나요?
           </div>
           <div className="text-[16px] leading-[24px] text-[#444444] text-wrap">

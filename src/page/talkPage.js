@@ -491,17 +491,6 @@ const TalkPage = () => {
     return view;
   };
 
-  const uploadAudioAndSend = async () => {
-    if (stopAll) return;
-    console.log("text:", voiceText, "/audio:", data.current.length);
-    try {
-      await uploadWavFile();
-      await sendVoice();
-    } catch (e) {
-      console.log("error", e);
-    }
-  };
-
   const renderInput = () => {
     return useVoice ? (
       <div className="flex flex-row rounded-full px-2 py-1 bg-gradient-to-r from-[#03de9d] to-[#05dfc2] text-white">
@@ -528,8 +517,7 @@ const TalkPage = () => {
           onKeyDown={(event) => {
             if (!inputText) return;
             if (event.key === "Enter") {
-              console.log("hello");
-              // sendText();
+              sendText();
             }
           }}
         />
@@ -613,7 +601,7 @@ const TalkPage = () => {
                 onClick={() => {
                   setUseVoice(false);
                 }}
-              ></div>
+              />
               <div className="flex flex-col items-center justify-center p-[12px] w-full gap-4">
                 <div className="bg-black/60 text-white text-[18px] max-w-[400px] text-center text-wrap break-keep">
                   {isLoading ? (

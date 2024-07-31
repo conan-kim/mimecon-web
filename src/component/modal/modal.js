@@ -27,7 +27,7 @@ const Modal = ({
     >
       <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-3">
-          <div className="font-bold text-[18px]">{title}</div>
+          <div className="text-[#222222] font-bold text-[18px]">{title}</div>
           <div className="text-[16px] leading-[24px] text-[#444444] text-wrap whitespace-pre">
             {description}
           </div>

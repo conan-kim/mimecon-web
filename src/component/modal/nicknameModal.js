@@ -11,17 +11,19 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
   const [agreed, setAgreed] = useState(false);
   const [valid, setValid] = useState(false);
   const [isDuplicated, setIsDuplicated] = useState(false);
+  const [hasInvalidCharacter, setHasInvalidCharacter] = useState(false);
   const [isTncOpen, setIsTncOpen] = useState(false);
 
   const [nickname, setNickname] = useState("");
   const [guestId, setGuestId] = useState("");
 
   useEffect(() => {
+    if (!isOpen) return;
     getRandomNickname();
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
-    if (agreed && nickname.length >= 2) {
+    if (agreed && nickname.length >= 2 && nickname.length < 11) {
       setValid(true);
     } else {
       setValid(false);
@@ -53,8 +55,15 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
   };
 
   const onChange = (event) => {
-    setNickname(event.target.value);
-    checkDuplicateNickname(event.target.value);
+    const value = event.target.value;
+    const pattern = /^[ㄱ-ㅎ가-힣0-9a-zA-Z]*$/; // 한글, 숫자, 영문만 가능
+    if (pattern.test(value)) {
+      setHasInvalidCharacter(false);
+      setNickname(event.target.value);
+      checkDuplicateNickname(event.target.value);
+    } else {
+      setHasInvalidCharacter(true);
+    }
   };
 
   if (!isOpen) return;
@@ -64,7 +73,9 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
       <div className="flex flex-col py-8 px-5 gap-8 bg-white rounded-[24px] max-w-[335px]">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col">
-            <div className="font-bold text-[18px]">닉네임을 입력해주세요</div>
+            <div className="text-[#222222] font-bold text-[18px]">
+              닉네임을 입력해주세요
+            </div>
             <div className="text-[16px] leading-[24px] text-[#444444]">
               톡방에서 사용할 닉네임이에요.
             </div>
@@ -77,6 +88,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
                   placeholder="메세지 입력"
                   onChange={onChange}
                   value={nickname}
+                  maxLength={10}
                 />
                 <div className="cursor-pointer" onClick={getRandomNickname}>
                   <DiceSvg />
@@ -84,12 +96,17 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
               </div>
               {isDuplicated && nickname.length >= 2 && (
                 <div className="ml-1 text-[10px] text-[#ff0000] opacity-80">
-                  중복된 닉네임입니다
+                  이미 사용중인 닉네임이에요.
                 </div>
               )}
               {nickname.length < 2 && (
                 <div className="ml-1 text-[10px] text-[#ff0000] opacity-80">
-                  2글자 이상이어야 합니다.
+                  닉네임은 2자 이상 10자 이하로 입력해주세요.
+                </div>
+              )}
+              {hasInvalidCharacter && (
+                <div className="ml-1 text-[10px] text-[#ff0000] opacity-80">
+                  닉네임은 띄어쓰기 없이 한글, 영문, 숫자만 입력 가능해요.
                 </div>
               )}
             </div>
