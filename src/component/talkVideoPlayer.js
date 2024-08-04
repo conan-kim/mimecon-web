@@ -5,6 +5,7 @@ import Hls from "hls.js";
 
 const TalkVideoPlayer = ({
   src,
+  poster,
   idleUrl,
   index,
   setIndex,
@@ -81,6 +82,7 @@ const TalkVideoPlayer = ({
   return (
     <video
       ref={videoRef}
+      poster={poster}
       className="w-full h-auto"
       autoPlay
       playsInline

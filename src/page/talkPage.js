@@ -19,6 +19,7 @@ import ListenJson from "@/public/listen.json";
 import AskJson from "@/public/ask.json";
 import Lottie from "react-lottie-player";
 import TalkCompleteModal from "../component/modal/talkCompleteModal";
+import Image from "next/image";
 
 const TalkPage = () => {
   const VOICE_STATUS = {
@@ -590,6 +591,7 @@ const TalkPage = () => {
             <div className="absolute z-[2] bg-black w-full h-full flex items-center justify-center overflow-hidden">
               <TalkVideoPlayer
                 src={videoUrl}
+                poster={mimecon?.mime?.img_url}
                 type="m3u8"
                 muted={isMuted}
                 loop
@@ -597,6 +599,7 @@ const TalkPage = () => {
                 onVideoPlay={onVideoPlay}
                 onVideoEnded={onVideoEnded}
               />
+              {/* <Image src={mimecon?.mime?.img_url} height={200} width={200} /> */}
             </div>
             <div className="absolute z-[10] top-0 bottom-0 flex flex-col w-full h-full items-center justify-between">
               <div className="flex flex-row justify-between items-center p-[12px] w-full">
