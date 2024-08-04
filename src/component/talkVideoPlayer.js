@@ -69,14 +69,13 @@ const TalkVideoPlayer = ({
 
   const _onVideoEnded = (event) => {
     if (stop) return;
-    setTimeout(() => {
-      try {
-        onVideoEnded();
-        videoRef.current.play();
-      } catch (e) {
-        console.log("e", e);
-      }
-    }, 500);
+
+    try {
+      onVideoEnded();
+      videoRef.current.play();
+    } catch (e) {
+      console.log("e", e);
+    }
   };
 
   return (

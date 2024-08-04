@@ -26,10 +26,6 @@ const TalkPage = () => {
     UPLOADING: 1,
     REPLYING: 2,
   };
-  // const [isMicOpen, setIsMicOpen] = useState(false);
-  // const [isSttOpen, setIsSttOpen] = useState(false);
-  // const [micStream, setMicStream] = useState(null);
-  // const [holdMic, setHoldMic] = useState(false);
   const [useVoice, setUseVoice] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState(VOICE_STATUS.LISTENING);
   const [showToast, setShowToast] = useState(false);
@@ -42,6 +38,8 @@ const TalkPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [mimecon, setMimecon] = useState(null);
   const [idleUrl, setIdleUrl] = useState("");
+  const [expiration1Url, setExpiration1Url] = useState("");
+  const [expiration2Url, setExpiration2Url] = useState("");
   const [inputText, setInputText] = useState("");
   const [voiceText, setVoiceText] = useState("");
   const [chatroomId, setChatroomId] = useState("");
@@ -89,6 +87,16 @@ const TalkPage = () => {
   }, [voiceText]);
 
   useEffect(() => {
+    console.log(isErrorModalOpen, isEndModalOpen, isAbsenceModalOpen);
+    if (isErrorModalOpen || isEndModalOpen || isAbsenceModalOpen) {
+      // TODO: STOP VIDEO
+      setStopAll(true);
+    } else {
+      setStopAll(false);
+    }
+  }, [isErrorModalOpen, isEndModalOpen, isAbsenceModalOpen]);
+
+  useEffect(() => {
     if (!voiceText || !audioFile) {
       return;
     }
@@ -100,7 +108,10 @@ const TalkPage = () => {
     const timer = setInterval(() => {
       setTime((prevTime) => {
         if (prevTime === 0 && !stopAll) {
+          console.log("here?");
           setStopAll(true);
+          setIsEndModalOpen(true);
+          clearInterval(timer);
         }
         return prevTime > 0 ? prevTime - 1 : 0;
       });
@@ -113,12 +124,14 @@ const TalkPage = () => {
     if (!isConnected) return;
     if (!mimecon) return;
     const reactTimer = setInterval(() => {
+      if (stopAll || time == 0) return;
+      console.log("reactTimer", new Date() - timeLastReactedAt);
       const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
       if (diff === 180) {
-        setVideoUrl(mimecon?.session_expiration01_url);
+        setVideoUrl(expiration1Url);
         setText("어디갔니? 왜 말이 없어?");
       } else if (diff === 240) {
-        setVideoUrl(mimecon?.session_expiration02_url);
+        setVideoUrl(expiration2Url);
         setText("더 이상 대답하지 않으면 대화를 끝낼게.");
       } else if (diff === 300) {
         setIsAbsenceModalOpen(true);
@@ -126,7 +139,7 @@ const TalkPage = () => {
     }, 1000);
 
     return () => clearInterval(reactTimer);
-  }, [isConnected, mimecon, timeLastReactedAt]);
+  }, [isConnected, mimecon, timeLastReactedAt, stopAll, time == 0]);
 
   const formatTime = (seconds) => {
     const pad = (num) => String(num).padStart(2, "0");
@@ -148,6 +161,8 @@ const TalkPage = () => {
       const res = await axiosInstance.post(`/mimecon/${mimecon_id}`);
       setMimecon(res);
       setIdleUrl(res?.idle_url);
+      setExpiration1Url(res.session_expiration01_url);
+      setExpiration2Url(res.session_expiration02_url);
     } catch (e) {
       console.log("error", e);
       setIsErrorModalOpen(true);
@@ -178,7 +193,6 @@ const TalkPage = () => {
       } = await axiosInstance.get(
         `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
       );
-      setTimeLastReactedAt(new Date());
       setChatroomId(chat_room_id);
       setVideoUrl(live_url);
       setText(_text);
@@ -186,6 +200,7 @@ const TalkPage = () => {
       setTimeout(() => {
         setShowToast(false);
         setIsConnected(true);
+        setTimeLastReactedAt(new Date());
       }, 3000);
     } catch (e) {
       console.log("error", e);
@@ -264,23 +279,29 @@ const TalkPage = () => {
   };
 
   const onVideoPlay = () => {
+    if (!useVoice) return;
     if (videoUrl === idleUrl) {
       holdMicRef.current = false;
       return;
     }
     holdMicRef.current = true;
-    // if (!holdMic) {
-    // }
   };
 
   const onVideoEnded = () => {
-    holdMicRef.current = false;
+    // if (holdMicRef.current) {
+    //   holdMicRef.current = false;
+    // }
     if (videoUrl === idleUrl) {
       return;
     }
     setVideoUrl(idleUrl);
     setText("");
     setVoiceStatus(VOICE_STATUS.LISTENING);
+  };
+
+  const toggleMic = (bool) => {
+    holdMicRef.current = !bool;
+    setUseVoice(bool);
   };
 
   const connectStt = async () => {
@@ -327,7 +348,7 @@ const TalkPage = () => {
 
       setupWebSocket(ws.current);
       await openMic();
-      setUseVoice(true);
+      toggleMic(true);
     } catch (e) {
       console.log("e", e);
     }
@@ -341,7 +362,7 @@ const TalkPage = () => {
       ws?.current?.send("EOS");
     }
     ws?.current?.close();
-    setUseVoice(false);
+    toggleMic(false);
   };
 
   const openMic = async () => {
@@ -373,7 +394,7 @@ const TalkPage = () => {
         if (dataFromWs.current.length >= 2048) {
           const chunk = dataFromWs.current.slice(0, 2048);
           dataFromWs.current = [...dataFromWs.current.slice(2048)];
-          // console.log("event", chunk.length);
+          console.log("event", chunk.length);
           if (ws.current !== 0 && ws.current.readyState === 1) {
             var pcm = encPCM(chunk);
             ws.current.binaryType = "arraybuffer";
@@ -572,7 +593,7 @@ const TalkPage = () => {
                 type="m3u8"
                 muted={isMuted}
                 loop
-                stop={stopAll}
+                stop={stopAll || time == 0}
                 onVideoPlay={onVideoPlay}
                 onVideoEnded={onVideoEnded}
               />
@@ -599,7 +620,7 @@ const TalkPage = () => {
               <div
                 className="flex flex-1 h-full w-full"
                 onClick={() => {
-                  setUseVoice(false);
+                  toggleMic(false);
                 }}
               />
               <div className="flex flex-col items-center justify-center p-[12px] w-full gap-4">

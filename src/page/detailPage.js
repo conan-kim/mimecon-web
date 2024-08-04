@@ -198,7 +198,7 @@ const DetailPage = () => {
         <div className="flex flex-col justify-center items-start text-white font-bold text-[14px] tracking-tight w-full">
           <div className="flex flex-row gap-2">
             <div
-              className="h-5 w-5 rounded-full bg-white"
+              className="h-5 w-5 min-h-5 min-w-5 rounded-full bg-white"
               style={{
                 backgroundImage: "url(" + data?.mime?.img_url + ")",
                 backgroundSize: "cover",
@@ -224,7 +224,7 @@ const DetailPage = () => {
             >
               {_value.isUser ? (
                 <div
-                  className="h-5 w-5 rounded-full bg-white"
+                  className="h-5 w-5 min-h-5 min-w-5 rounded-full bg-white"
                   style={{
                     backgroundImage: "url(" + data?.profile_img_url + ")",
                     backgroundSize: "cover",
