@@ -277,6 +277,9 @@ const DetailPage = () => {
         {!isPre && data && (
           <VideoPlayer
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}
+            poster={
+              isMimecon ? data?.mime?.img_url : data?.mimecon?.mime?.img_url
+            }
             progressRef={progressRef}
             type="m3u8"
             loop

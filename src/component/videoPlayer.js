@@ -5,6 +5,7 @@ import Hls from "hls.js";
 
 const VideoPlayer = ({
   src,
+  poster,
   progressRef,
   index,
   setIndex,
@@ -74,6 +75,7 @@ const VideoPlayer = ({
   return (
     <video
       ref={videoRef}
+      poster={poster}
       className="w-full h-auto"
       autoPlay
       playsInline
