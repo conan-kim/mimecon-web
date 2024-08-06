@@ -88,7 +88,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
                   placeholder="메세지 입력"
                   onChange={onChange}
                   value={nickname}
-                  maxLength={10}
+                  maxLength={14}
                 />
                 <div className="cursor-pointer" onClick={getRandomNickname}>
                   <DiceSvg />
