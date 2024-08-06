@@ -23,7 +23,7 @@ const NicknameModal = ({ isOpen, setIsOpen, onCompleted }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (agreed && nickname.length >= 2 && nickname.length < 11) {
+    if (agreed && nickname.length >= 2 && nickname.length < 15) {
       setValid(true);
     } else {
       setValid(false);
