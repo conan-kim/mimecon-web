@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
+import { isDev } from "./config";
 
 class Logger {
   static _printLog() {
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT === "production") return;
+    if (!isDev) return;
     const args = Array.from(arguments);
     const type = args.shift();
 
-    let prefix = "[PINCH]";
+    let prefix = "[MIMECON WEB]";
     const ts = new Date();
     const dateString = "[" + dayjs(ts).format("hh:mm:ss.ms") + "]";
     args.unshift(dateString);

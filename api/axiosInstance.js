@@ -1,8 +1,9 @@
 import axios from "axios";
 import Logger from "../utils/logger";
+import config from "../utils/config";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_DEV_API_URL,
+  baseURL: config.API_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json;charset=UTF-8",

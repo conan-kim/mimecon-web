@@ -20,6 +20,7 @@ import AskJson from "@/public/ask.json";
 import Lottie from "react-lottie-player";
 import TalkCompleteModal from "../component/modal/talkCompleteModal";
 import Image from "next/image";
+import config from "../../utils/config";
 
 const TalkPage = () => {
   const VOICE_STATUS = {
@@ -309,17 +310,17 @@ const TalkPage = () => {
     if (stopAll) return;
     console.log("connectStt");
     try {
-      const _ws = new WebSocket(process.env.NEXT_PUBLIC_WSS_STT_URL);
+      const _ws = new WebSocket(config.WSS_STT_URL);
       ws.current = _ws;
 
       const setupWebSocket = (wsInstance) => {
         wsInstance.onopen = () => {
           wsInstance.send(
             JSON.stringify({
-              app_id: process.env.NEXT_PUBLIC_WS_CONNECT_APP_ID,
-              synapses_id: process.env.NEXT_PUBLIC_WS_CONNECT_SYNAPSES_ID,
-              owner: process.env.NEXT_PUBLIC_WS_CONNECT_OWNER,
-              model_name: process.env.NEXT_PUBLIC_WS_CONNECT_MODEL_NAME,
+              app_id: config.WS_CONNECT_APP_ID,
+              synapses_id: config.WS_CONNECT_SYNAPSES_ID,
+              owner: config.WS_CONNECT_OWNER,
+              model_name: config.WS_CONNECT_MODEL_NAME,
             })
           );
         };
