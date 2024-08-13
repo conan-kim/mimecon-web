@@ -37,4 +37,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 Web EC2 connect
 
-- ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-13-125-251-28.ap-northeast-2.compute.amazonaws.com
+- (DEV) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-13-125-251-28.ap-northeast-2.compute.amazonaws.com
+- (PROD) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-54-180-94-227.ap-northeast-2.compute.amazonaws.com
