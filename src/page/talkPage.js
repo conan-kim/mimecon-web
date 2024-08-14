@@ -19,7 +19,6 @@ import ListenJson from "@/public/listen.json";
 import AskJson from "@/public/ask.json";
 import Lottie from "react-lottie-player";
 import TalkCompleteModal from "../component/modal/talkCompleteModal";
-import Image from "next/image";
 import config from "../../utils/config";
 
 const TalkPage = () => {
@@ -46,6 +45,7 @@ const TalkPage = () => {
   const [voiceText, setVoiceText] = useState("");
   const [chatroomId, setChatroomId] = useState("");
   const [time, setTime] = useState(600);
+  const [noResponseTime, setNoResponseTime] = useState(0);
   const [timeLastReactedAt, setTimeLastReactedAt] = useState(new Date());
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
@@ -89,9 +89,8 @@ const TalkPage = () => {
   }, [voiceText]);
 
   useEffect(() => {
-    console.log(isErrorModalOpen, isEndModalOpen, isAbsenceModalOpen);
     if (isErrorModalOpen || isEndModalOpen || isAbsenceModalOpen) {
-      // TODO: STOP VIDEO
+      // TODO: STOP VIDEO AND TIMER
       setStopAll(true);
     } else {
       setStopAll(false);
@@ -107,10 +106,11 @@ const TalkPage = () => {
 
   useEffect(() => {
     if (!isConnected) return;
+    // main timer
     const timer = setInterval(() => {
+      if (stopAll) return;
       setTime((prevTime) => {
         if (prevTime === 0 && !stopAll) {
-          console.log("here?");
           setStopAll(true);
           setIsEndModalOpen(true);
           clearInterval(timer);
@@ -119,29 +119,60 @@ const TalkPage = () => {
       });
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [isConnected]);
+    // react timer
+    const reactTimer = setInterval(() => {
+      if (stopAll) return;
+      setNoResponseTime((prevTime) => {
+        if (prevTime > 300 && !stopAll) {
+          setStopAll(true);
+          clearInterval(reactTimer);
+        }
+        return prevTime + 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(reactTimer);
+    };
+  }, [isConnected, stopAll]);
 
   useEffect(() => {
     if (!isConnected) return;
     if (!mimecon) return;
-    const reactTimer = setInterval(() => {
-      if (stopAll || time == 0) return;
-      console.log("reactTimer", new Date() - timeLastReactedAt);
-      const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
-      if (diff === 180) {
-        setVideoUrl(expiration1Url);
-        setText("어디갔니? 왜 말이 없어?");
-      } else if (diff === 240) {
-        setVideoUrl(expiration2Url);
-        setText("더 이상 대답하지 않으면 대화를 끝낼게.");
-      } else if (diff === 300) {
-        setIsAbsenceModalOpen(true);
-      }
-    }, 1000);
+    if (noResponseTime === 180) {
+      setVideoUrl(expiration1Url);
+      setText("어디갔니? 왜 말이 없어?");
+    }
+    if (noResponseTime === 240) {
+      setVideoUrl(expiration2Url);
+      setText("더 이상 대답하지 않으면 대화를 끝낼게.");
+    }
+    if (noResponseTime === 300) {
+      setIsAbsenceModalOpen(true);
+    }
+  }, [isConnected, mimecon, noResponseTime]);
 
-    return () => clearInterval(reactTimer);
-  }, [isConnected, mimecon, timeLastReactedAt, stopAll, time == 0]);
+  // useEffect(() => {
+  //   if (!isConnected) return;
+  //   if (!mimecon) return;
+  //   const reactTimer = setInterval(() => {
+  //     if (stopAll || time === 0) return;
+  //     console.log("reactTimer", new Date() - timeLastReactedAt);
+  //     const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
+  //     if (diff === 180) {
+  //       setVideoUrl(expiration1Url);
+  //       setText("어디갔니? 왜 말이 없어?");
+  //     } else if (diff === 240) {
+  //       setVideoUrl(expiration2Url);
+  //       setText("더 이상 대답하지 않으면 대화를 끝낼게.");
+  //     } else if (diff === 300) {
+  //       setIsAbsenceModalOpen(true);
+  //     }
+  //   }, 1000);
+
+  //   return () => clearInterval(reactTimer);
+  // }, [isConnected, mimecon, timeLastReactedAt, stopAll, time == 0, stopAll]);
 
   const formatTime = (seconds) => {
     const pad = (num) => String(num).padStart(2, "0");
@@ -326,7 +357,6 @@ const TalkPage = () => {
         };
 
         wsInstance.onmessage = (event) => {
-          console.log("event", event);
           const message = event.data;
           if (message == "No Available Workers") {
             disconnectStt();
@@ -337,7 +367,8 @@ const TalkPage = () => {
           setText(jsonData["wordAlignment"].map((e) => e["word"]).join(" "));
           const isFinal = jsonData["final"];
           const _text = jsonData["transcript"];
-          if (isFinal && _text.length > 2) {
+          if (isFinal) {
+            console.log("event", event);
             setVoiceText(_text);
             setText(_text);
           }
