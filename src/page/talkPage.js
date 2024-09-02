@@ -34,6 +34,7 @@ const TalkPage = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isMaxCountModalOpen, setIsMaxCountModalOpen] = useState(false);
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
   const [isAbsenceModalOpen, setIsAbsenceModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -209,8 +210,10 @@ const TalkPage = () => {
       );
       if (available_chatroom && available_link) {
         setIsNicknameModalOpen(true);
-      } else {
+      } else if (!available_chatroom) {
         setIsErrorModalOpen(true);
+      } else if (!available_link) {
+        setIsMaxCountModalOpen(true);
       }
     } catch (e) {
       console.log("error", e);
@@ -681,6 +684,14 @@ const TalkPage = () => {
         isOpen={isErrorModalOpen}
         setIsOpen={setIsErrorModalOpen}
         title="확인할 수 없는 미미콘이에요 😢"
+        description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
+        cancelText="확인"
+        confirmText="만들러가기"
+      />
+      <Modal
+        isOpen={isMaxCountModalOpen}
+        setIsOpen={setIsMaxCountModalOpen}
+        title="앗! 대화 할 수 있는 횟수가 초과되었어요 😢"
         description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
         cancelText="확인"
         confirmText="만들러가기"
