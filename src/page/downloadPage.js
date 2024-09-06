@@ -69,16 +69,12 @@ const DownloadPage = () => {
             <span className="font-bold">같이 미미콘 할래?</span>
           </div>
         </div>
-        <a
-          href="https://www.daum.net"
-          target="_blank"
-          className="flex flex-col flex-1 w-full items-center gap-4"
-        >
+        <div className="flex flex-col flex-1 w-full items-center gap-4">
           <div className="text-[#00E09B] text-[20px] font-bold">
             지금 바로 다운로드 하세요!
           </div>
           {renderDownload()}
-        </a>
+        </div>
       </div>
     </div>
   );
