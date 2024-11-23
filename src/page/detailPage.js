@@ -12,13 +12,17 @@ import AISvg from "@/public/summary_talk.svg";
 import TalkFilledSvg from "@/public/talk_filled.svg";
 import MuteSvg from "@/public/mute.svg";
 import UnmuteSvg from "@/public/unmuted.svg";
+import PdfSvg from "@/public/pdf.svg";
+import LinkSvg from "@/public/link.svg";
 import axios from "axios";
 import { convertStringToNum } from "../../utils/math";
 import InterActionModal from "../component/modal/interactionModal";
 import Link from "next/link";
 
 const DetailPage = () => {
+  const [showGuide, setShowGuide] = useState(true);
   const [isPre, setIsPre] = useState(true);
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [isAppDownloadModalOpen, setIsAppDownloadModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -45,6 +49,15 @@ const DetailPage = () => {
   useEffect(() => {
     fetchVtt();
   }, [data]);
+
+  useEffect(() => {
+    if (isInterActionModalOpen) return;
+    const timer = setTimeout(() => {
+      setIsTitleVisible(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [isInterActionModalOpen]);
 
   const checkValidation = () => {
     let _valid = true;
@@ -258,6 +271,17 @@ const DetailPage = () => {
     );
   };
 
+  const handlePdfClick = () => {
+    console.log("pdf", data.file_info.url);
+    const url = data.file_info.url;
+    window.open(url, "_blank");
+  };
+
+  const handleLinkClick = () => {
+    const url = data.url_info.url;
+    window.open(url, "_blank");
+  };
+
   // if (isPre) {
   //   return (
   //     <div
@@ -290,22 +314,58 @@ const DetailPage = () => {
         )}
       </div>
       <div className="absolute bg-gradient-to-b from-[#00000000] via-[#0000004d] to-[#0000002e] flex flex-col items-center justify-between w-full h-full">
-        <div className="flex flex-row w-full items-center justify-between px-[12px] py-[8px] bg-black/70">
-          {renderProfile()}
-          <div className="cursor-pointer" onClick={openAppDownloadModal}>
-            <div className="border rounded-full px-[12px] py-[8px] text-white border-white text-[13px] opacity-80">
-              앱 열기
+        <div className="flex flex-col w-full items-center justify-between gap-4">
+          <div className="flex flex-row w-full items-center justify-between px-[12px] py-[8px] bg-black/70">
+            {renderProfile()}
+            <div className="cursor-pointer" onClick={openAppDownloadModal}>
+              <div className="border rounded-full px-[12px] py-[8px] text-white border-white text-[13px] opacity-80">
+                앱 열기
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row w-full items-center justify-between px-[12px] py-[8px]">
+            <div
+              className="w-10 h-10 flex flex-col items-center justify-center bg-black/60 rounded-full cursor-pointer"
+              onClick={toggleMute}
+            >
+              {isMuted ? <MuteSvg /> : <UnmuteSvg />}
+            </div>
+            <div className="flex flex-row gap-2">
+              {data?.file_info?.id && (
+                <div
+                  className="min-w-10 h-10 flex flex-row items-center justify-center bg-black/60 rounded-full cursor-pointer px-[12px]"
+                  onClick={handlePdfClick}
+                >
+                  <PdfSvg />
+                  <div
+                    className={`text-white transition-all duration-1000 ${
+                      isTitleVisible ? "ml-2" : "fade-out-width"
+                    }`}
+                  >
+                    {data?.file_info?.name ?? "파일"}
+                  </div>
+                </div>
+              )}
+              {data?.url_info?.id && (
+                <div
+                  className="min-w-10 h-10 flex flex-row items-center justify-center bg-black/60 rounded-full cursor-pointer px-[12px]"
+                  onClick={handleLinkClick}
+                >
+                  <LinkSvg />
+                  <div
+                    className={`text-white transition-all duration-1000 ${
+                      isTitleVisible ? "ml-2" : "fade-out-width"
+                    }`}
+                  >
+                    {data?.url_info?.name ?? "첨부링크 보기"}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
         <div className="flex flex-col w-full items-start justify-start">
           <div className="flex flex-col items-start justify-center px-5 py-8 gap-4">
-            <div
-              className="w-8 h-8 flex flex-col items-center justify-center bg-black/60 rounded-full cursor-pointer"
-              onClick={toggleMute}
-            >
-              {isMuted ? <MuteSvg /> : <UnmuteSvg />}
-            </div>
             {renderVtt()}
             <div className="flex flex-row items-center justify-center gap-2 pt-2">
               <div

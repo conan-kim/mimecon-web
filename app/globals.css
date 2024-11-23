@@ -29,6 +29,25 @@ body {
     rgb(var(--background-start-rgb)); */
 }
 
+
+.fade-out-width {
+  animation: fadeOutWidth 1s forwards;
+}
+
+@keyframes fadeOutWidth {
+  from {
+    opacity: 1;
+    width: auto;
+    margin-left: 8px;
+  }
+  to {
+    opacity: 0;
+    width: 0;
+    margin-left: 0px;
+  }
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
