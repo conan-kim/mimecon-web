@@ -39,3 +39,4 @@ Web EC2 connect
 
 - (DEV) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-13-125-251-28.ap-northeast-2.compute.amazonaws.com
 - (PROD) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-54-180-94-227.ap-northeast-2.compute.amazonaws.com
+  // 96.45.45.45

@@ -46,6 +46,7 @@ const Modal = ({
           </div>
           <Link
             href={getDownloadLink()}
+            target="_blank"
             className="flex flex-col cursor-pointer rounded-full w-[143px] py-[14px] items-center justify-center text-[16px] font-bold bg-[#00E09B] text-white"
             onClick={() => {
               if (onConfirm) {

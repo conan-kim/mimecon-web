@@ -11,7 +11,6 @@ export const PlatformProvider = ({ children }) => {
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    console.log("userAgent", userAgent);
     if (/android/i.test(userAgent)) {
       setPlatform("android");
     } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
