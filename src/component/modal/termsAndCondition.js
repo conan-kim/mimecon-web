@@ -45,7 +45,8 @@ const TermsAndCondition = ({ isOpen, setIsOpen }) => {
           {data?.termsTitle ?? "-"}
         </div>
         <div
-          className="px-5 py-4 text-ellipsis w-full text-pretty overflow-y-scroll scrollbar-hide"
+          className="px-5 py-4 text-ellipsis w-full text-pretty overflow-y-scroll scrollbar-hide max-w-screen-md"
+          style={{ whiteSpace: "pre-wrap" }}
           dangerouslySetInnerHTML={{ __html: data?.termsTxt ?? "-" }}
         />
       </motion.div>
