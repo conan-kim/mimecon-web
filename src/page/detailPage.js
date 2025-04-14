@@ -18,7 +18,7 @@ import axios from "axios";
 import { convertStringToNum } from "../../utils/math";
 import InterActionModal from "../component/modal/interactionModal";
 import Link from "next/link";
-
+import { usePlatform } from "@/context/platformContext";
 const DetailPage = () => {
   const [showGuide, setShowGuide] = useState(true);
   const [isPre, setIsPre] = useState(true);
@@ -36,6 +36,7 @@ const DetailPage = () => {
   const id = searchParams.get("id");
   const isMimecon = searchParams.get("is-mimecon") === "true";
   const progressRef = useRef(0);
+  const { platform } = usePlatform();
 
   useEffect(() => {
     console.log("isMimecon", isMimecon, id);
@@ -117,7 +118,15 @@ const DetailPage = () => {
   };
 
   const openAppDownloadModal = () => {
-    setIsAppDownloadModalOpen(true);
+    // 앱이 있다면, 앱 실행
+    if (platform === "android" || platform === "ios") {
+      const appUrl = "mimecon://www.mimecon.app";
+      window.location.href = appUrl;
+    }
+    // 없다면 앱 다운로드 모달 오픈
+    setTimeout(() => {
+      setIsAppDownloadModalOpen(true);
+    }, 2000);
   };
 
   const renderProfile = () => {

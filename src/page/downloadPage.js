@@ -30,8 +30,8 @@ const DownloadPage = () => {
       <div className="flex flex-col flex-1 w-full">
         {platform === "android" || platform === "ios" ? (
           <a
-            href="mimecon://www.mimecon.app"
-            // href={getDownloadLink()}
+            // href="mimecon://www.mimecon.app"
+            href={getDownloadLink()}
             target="_blank"
             className="flex flex-row cursor-pointer justify-center items-center mx-[20px] py-[10px] rounded-[16px] bg-gradient-to-r from-[#00FF94] to-[#00E5CA]"
           >
