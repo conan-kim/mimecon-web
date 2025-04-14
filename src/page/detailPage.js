@@ -119,14 +119,22 @@ const DetailPage = () => {
 
   const openAppDownloadModal = () => {
     // 앱이 있다면, 앱 실행
-    if (platform === "android" || platform === "ios") {
-      const appUrl = "mimecon://www.mimecon.app";
+    if (platform === "android") {
+      const appUrl = isMimecon
+        ? `mimecon://www.mimecon.app/#/mimecon/${id}`
+        : `mimecon://www.mimecon.app/#/mimetalk/${id}`;
+      window.location.href = appUrl;
+    }
+    if (platform === "ios") {
+      const appUrl = isMimecon
+        ? `mimecon://www.mimecon.app/#/mimecon/${id}`
+        : `mimecon://www.mimecon.app/#/mimetalk/${id}`;
       window.location.href = appUrl;
     }
     // 없다면 앱 다운로드 모달 오픈
     setTimeout(() => {
       setIsAppDownloadModalOpen(true);
-    }, 2000);
+    }, 500);
   };
 
   const renderProfile = () => {
