@@ -20,7 +20,9 @@ const TalkVideoPlayer = ({
 
   useEffect(() => {
     console.log("=====HELLO ===", type, Hls.isSupported(), videoRef.current.canPlayType("application/vnd.apple.mpegurl"))
-    if (type === "m3u8" && Hls.isSupported()) {
+    if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+      videoRef.current.src = src;
+    } else if (type === "m3u8" && Hls.isSupported()) {
       // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       //   // This will run in safari, where HLS is supported natively
       //   videoRef.current.src = src;
@@ -41,9 +43,7 @@ const TalkVideoPlayer = ({
       hls.attachMedia(videoRef.current);
       videoRef.current.autoplay = true;
       videoRef.current.play();
-    } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
-      videoRef.current.src = src;
-    }
+    } 
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
