@@ -30,7 +30,13 @@ const TalkVideoPlayer = ({
       //   hls.loadSource(src);
       //   hls.attachMedia(videoRef.current);
       // }
-      const hls = new Hls();
+      const hls = new Hls({
+        debug: false,
+        enableWorker: true,
+        lowLatencyMode: true,
+        backBufferLength: 90,
+        maxBufferLength: 30,
+      });
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
       videoRef.current.autoplay = true;
@@ -89,6 +95,7 @@ const TalkVideoPlayer = ({
       className="w-full h-auto"
       autoPlay
       playsInline
+      webkit-playsinline="true"
       preload="auto"
       {...rest}
     />
