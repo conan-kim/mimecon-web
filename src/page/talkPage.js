@@ -232,9 +232,8 @@ const TalkPage = () => {
       } = await axiosInstance.get(
         `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
       );
-      console.log('>>><<<<', contents_url, live_url)
+      console.log('>>><<<<', live_url)
       setChatroomId(chat_room_id);
-      // setVideoUrl(contents_url);
       setVideoUrl(live_url);
       setText(_text);
       setShowToast(true);
@@ -656,7 +655,7 @@ const TalkPage = () => {
             </div>
           </div>
         )}
-        {isConnected && (
+        {videoUrl && (
           <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center">
             <div className="absolute z-[2] bg-black w-full h-full flex items-center justify-center overflow-hidden">
               <TalkVideoPlayer
