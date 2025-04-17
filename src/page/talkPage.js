@@ -232,9 +232,10 @@ const TalkPage = () => {
       } = await axiosInstance.get(
         `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
       );
+      console.log('>>><<<<', contents_url, live_url)
       setChatroomId(chat_room_id);
-      setVideoUrl(contents_url);
-      // setVideoUrl(live_url);
+      // setVideoUrl(contents_url);
+      setVideoUrl(live_url);
       setText(_text);
       setShowToast(true);
       setTimeout(() => {

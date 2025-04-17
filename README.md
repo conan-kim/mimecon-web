@@ -43,3 +43,4 @@ Web EC2 connect
 
 su / 0000
 yarn build && pm2 restart 0
+yarn dev -- -H 0.0.0.0
