@@ -19,6 +19,7 @@ const VideoPlayer = ({
   const videoRef = useRef();
 
   useEffect(() => {
+    console.log("=====HELLO ===", type, Hls.isSupported())
     if (type === "m3u8" && Hls.isSupported()) {
       // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       //   // This will run in safari, where HLS is supported natively
@@ -27,6 +28,8 @@ const VideoPlayer = ({
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
+      videoRef.current.autoplay = true;
+      videoRef.current.play();
     }
 
     const handleVisibilityChange = () => {
