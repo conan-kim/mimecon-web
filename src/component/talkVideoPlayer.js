@@ -12,6 +12,7 @@ const TalkVideoPlayer = ({
   type,
   loop,
   stop,
+  wait,
   onVideoPlay,
   onVideoEnded,
   ...rest
@@ -19,7 +20,7 @@ const TalkVideoPlayer = ({
   const videoRef = useRef();
 
   useEffect(() => {
-    console.log("=====HELLO ===", type, Hls.isSupported(), videoRef.current.canPlayType("application/vnd.apple.mpegurl"))
+    console.log("=====HELLO ===", wait, type, Hls.isSupported(), videoRef.current.canPlayType("application/vnd.apple.mpegurl"))
     // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
     //   videoRef.current.src = src;
     // } else 
@@ -42,9 +43,17 @@ const TalkVideoPlayer = ({
       });
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
-      videoRef.current.autoplay = true;
-      videoRef.current.play();
-    } 
+      if (wait) {
+        // wait 3 sec
+        console.log("wait", wait)
+        setTimeout(() => {
+          // videoRef.current.autoplay = true;
+          videoRef.current.play();
+        }, 3000)
+      } else {
+        videoRef.current.play();
+      }
+    }
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -94,7 +103,7 @@ const TalkVideoPlayer = ({
       ref={videoRef}
       poster={poster}
       className="w-full h-auto"
-      autoPlay
+      // autoPlay
       playsInline
       webkit-playsinline="true"
       preload="auto"

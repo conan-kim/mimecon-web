@@ -51,9 +51,11 @@ const TalkPage = () => {
   const [timeLastReactedAt, setTimeLastReactedAt] = useState(new Date());
   const [text, setText] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [initialVideoUrl, setInitialVideoUrl] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [stopAll, setStopAll] = useState(false);
   const [isMicErrorModalOpen, setIsMicErrorModalOpen] = useState(false);
+  const [isPre, setIsPre] = useState(true);
 
   const router = useRouter();
   const { getDownloadLink } = usePlatform();
@@ -156,27 +158,6 @@ const TalkPage = () => {
     }
   }, [isConnected, mimecon, noResponseTime]);
 
-  // useEffect(() => {
-  //   if (!isConnected) return;
-  //   if (!mimecon) return;
-  //   const reactTimer = setInterval(() => {
-  //     if (stopAll || time === 0) return;
-  //     console.log("reactTimer", new Date() - timeLastReactedAt);
-  //     const diff = Math.floor((new Date() - timeLastReactedAt) / 1000);
-  //     if (diff === 180) {
-  //       setVideoUrl(expiration1Url);
-  //       setText("어디갔니? 왜 말이 없어?");
-  //     } else if (diff === 240) {
-  //       setVideoUrl(expiration2Url);
-  //       setText("더 이상 대답하지 않으면 대화를 끝낼게.");
-  //     } else if (diff === 300) {
-  //       setIsAbsenceModalOpen(true);
-  //     }
-  //   }, 1000);
-
-  //   return () => clearInterval(reactTimer);
-  // }, [isConnected, mimecon, timeLastReactedAt, stopAll, time == 0, stopAll]);
-
   const formatTime = (seconds) => {
     const pad = (num) => String(num).padStart(2, "0");
     const minutes = Math.floor(seconds / 60);
@@ -227,7 +208,6 @@ const TalkPage = () => {
       const {
         chat_room_id,
         live_url,
-        contents_url,
         text: _text,
       } = await axiosInstance.get(
         `/guest/mimecon/start?mimecon_id=${mimecon_id}&guest_id=${guest_id}&nick_name=${nick_name}`
@@ -235,6 +215,7 @@ const TalkPage = () => {
       console.log('>>><<<<', live_url)
       setChatroomId(chat_room_id);
       setVideoUrl(live_url);
+      setInitialVideoUrl(live_url);
       setText(_text);
       setShowToast(true);
       setTimeout(() => {
@@ -664,11 +645,11 @@ const TalkPage = () => {
                 type="m3u8"
                 muted={isMuted}
                 loop
+                wait={initialVideoUrl === videoUrl}
                 stop={stopAll || time == 0}
                 onVideoPlay={onVideoPlay}
                 onVideoEnded={onVideoEnded}
               />
-              {/* <Image src={mimecon?.mime?.img_url} height={200} width={200} /> */}
             </div>
             <div className="absolute z-[10] top-0 bottom-0 flex flex-col w-full h-full items-center justify-between">
               <div className="flex flex-row justify-between items-center p-[12px] w-full">
