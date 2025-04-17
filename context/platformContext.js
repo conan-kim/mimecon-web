@@ -21,16 +21,14 @@ export const PlatformProvider = ({ children }) => {
   }, []);
 
   const getDownloadLink = () => {
-    switch (platform) {
-      case "android":
-        return "https://play.google.com/store/apps/details?id=com.ploonet.mimecon";
-      case "ios":
-        return "https://apps.apple.com/app/%EB%AF%B8%EB%AF%B8%EC%BD%98-mimecon/id6504627348";
-      case "desktop":
-        return "download";
-      default:
-        return "download";
+    let url = 'download';
+    if (platform === "android") {
+      url = "https://play.google.com/store/apps/details?id=com.ploonet.mimecon";
+    } else if (platform === "ios") {
+      url = "https://apps.apple.com/app/%EB%AF%B8%EB%AF%B8%EC%BD%98-mimecon/id6504627348";
     }
+
+    return url;
   };
 
   return (

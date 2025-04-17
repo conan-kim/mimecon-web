@@ -318,6 +318,7 @@ const DetailPage = () => {
         {!isPre && data && (
           <VideoPlayer
             src={isMimecon ? data?.intro_url : data?.contents_url ?? ""}
+            // src={'https://cdn-unifier.lucasai.io/mss/dev/mimecon/67c97b0108f25f21cc605ec1/67fcd643fcd9a740fbc35b66/2a14fa3d-2df4-472a-973e-f3b977947b70/index.m3u8'}
             poster={
               isMimecon ? data?.mime?.img_url : data?.mimecon?.mime?.img_url
             }
@@ -355,9 +356,8 @@ const DetailPage = () => {
                 >
                   <PdfSvg />
                   <div
-                    className={`text-white transition-all duration-1000 ${
-                      isTitleVisible ? "ml-2" : "fade-out-width"
-                    }`}
+                    className={`text-white transition-all duration-1000 ${isTitleVisible ? "ml-2" : "fade-out-width"
+                      }`}
                   >
                     {data?.file_info?.name ?? "파일"}
                   </div>
@@ -370,9 +370,8 @@ const DetailPage = () => {
                 >
                   <LinkSvg />
                   <div
-                    className={`text-white transition-all duration-1000 ${
-                      isTitleVisible ? "ml-2" : "fade-out-width"
-                    }`}
+                    className={`text-white transition-all duration-1000 ${isTitleVisible ? "ml-2" : "fade-out-width"
+                      }`}
                   >
                     {data?.url_info?.name ?? "첨부링크 보기"}
                   </div>
@@ -399,7 +398,6 @@ const DetailPage = () => {
                     : "talk?mimecon_id=" + data?.mimecon?.id
                 }
                 className="flex flex-row gap-2 items-center jusitfy-center py-2 px-3 rounded-full cursor-pointer border border-[#00E09B] bg-black/20"
-                // onClick={openAppDownloadModal}
               >
                 <TalkFilledSvg />
                 <div className="text-[#00E09B] text-[14px] font-semibold">

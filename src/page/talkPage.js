@@ -20,6 +20,7 @@ import AskJson from "@/public/ask.json";
 import Lottie from "react-lottie-player";
 import TalkCompleteModal from "../component/modal/talkCompleteModal";
 import config from "../../utils/config";
+import MicErrorModal from "../component/modal/micErrorModal";
 
 const TalkPage = () => {
   const VOICE_STATUS = {
@@ -52,6 +53,7 @@ const TalkPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [stopAll, setStopAll] = useState(false);
+  const [isMicErrorModalOpen, setIsMicErrorModalOpen] = useState(false);
 
   const router = useRouter();
   const { getDownloadLink } = usePlatform();
@@ -239,7 +241,7 @@ const TalkPage = () => {
         setTimeLastReactedAt(new Date());
       }, 3000);
     } catch (e) {
-      console.log("error", e);
+      console.log("joinChatroom error", e);
       setIsErrorModalOpen(true);
     }
   };
@@ -252,7 +254,7 @@ const TalkPage = () => {
       );
       router.push("download");
     } catch (e) {
-      console.log("error", e);
+      console.log("endChatroom error", e);
     }
   };
 
@@ -276,37 +278,44 @@ const TalkPage = () => {
       setTimeLastReactedAt(new Date());
     } catch (e) {
       setIsLoading(false);
-      console.log("error", e);
+      console.log("sendText error", e);
     }
   };
 
   const sendVoice = async () => {
     if (stopAll) return;
+    if (isLoading) return;
     try {
+      console.log(">>>>>> SEND VOICE")
+      setIsLoading(true);
       holdMicRef.current = true;
-      setTimeout(() => {}, 1000);
       setVoiceStatus(VOICE_STATUS.UPLOADING);
+      setTimeout(() => { }, 1000);
       const params = {
         ...audioFile,
         chat_room_id: chatroomId,
         text: voiceText,
       };
       if (!audioFile || !voiceText) {
+        setIsLoading(false);
+        setVoiceStatus(VOICE_STATUS.LISTENING);
         return;
       }
       const { live_url, text: _text } = await axiosInstance.post(
         "/guest/mimecon/talk",
         params
       );
-      setVoiceStatus(VOICE_STATUS.REPLYING);
       setVideoUrl(live_url);
+      setVoiceStatus(VOICE_STATUS.REPLYING);
+      setIsLoading(false);
       setText(_text);
       setInputText("");
       setVoiceText("");
       setAudioFile(null);
       setTimeLastReactedAt(new Date());
     } catch (e) {
-      console.log("error", e);
+      setIsLoading(false);
+      console.log("sendVoice error", e);
     }
   };
 
@@ -321,12 +330,15 @@ const TalkPage = () => {
       return;
     }
     holdMicRef.current = true;
+    dataFromWs.current = [];
+    data.current = [];
   };
 
   const onVideoEnded = () => {
     // if (holdMicRef.current) {
     //   holdMicRef.current = false;
     // }
+    console.log("onVideoEnded", videoUrl);
     if (videoUrl === idleUrl) {
       return;
     }
@@ -336,13 +348,21 @@ const TalkPage = () => {
   };
 
   const toggleMic = (bool) => {
-    holdMicRef.current = !bool;
-    setUseVoice(bool);
+    if (bool) {
+      dataFromWs.current = [];
+      data.current = [];
+      setTimeout(() => {
+        holdMicRef.current = false;
+        setUseVoice(true);
+      }, 500);
+    } else {
+      holdMicRef.current = true;
+      setUseVoice(false);
+    }
   };
 
   const connectStt = async () => {
     if (stopAll) return;
-    console.log("connectStt");
     try {
       const _ws = new WebSocket(config.WSS_STT_URL);
       ws.current = _ws;
@@ -370,23 +390,26 @@ const TalkPage = () => {
           setText(jsonData["wordAlignment"].map((e) => e["word"]).join(" "));
           const isFinal = jsonData["final"];
           const _text = jsonData["transcript"];
+          console.log("FROM STT..", _text, isFinal);
           if (isFinal) {
-            console.log("event", event);
             setVoiceText(_text);
             setText(_text);
           }
         };
 
         wsInstance.onerror = (event) => {
-          console.log("error", event);
+          console.log("connectStt error", event);
         };
       };
-
       setupWebSocket(ws.current);
       await openMic();
       toggleMic(true);
     } catch (e) {
       console.log("e", e);
+      disconnectStt();
+      toggleMic(false);
+      setIsMicErrorModalOpen(true);
+      throw e;
     }
   };
 
@@ -415,14 +438,16 @@ const TalkPage = () => {
         numChannels,
         numChannels
       );
-
       source = audioContext.createMediaStreamSource(stream);
       source.connect(gainNode);
       gainNode.connect(scriptProcessorNode);
-
       scriptProcessorNode.connect(audioContext.destination);
       scriptProcessorNode.addEventListener("audioprocess", async (event) => {
-        if (holdMicRef.current) return;
+        // if (holdMicRef.current) {
+        //   dataFromWs.current = [];
+        //   data.current = [];
+        //   return;
+        // }
         var audioBuffer = event.inputBuffer;
         var channelData = audioBuffer.getChannelData(0);
         dataFromWs.current = [...dataFromWs.current, ...channelData];
@@ -434,7 +459,11 @@ const TalkPage = () => {
           if (ws.current !== 0 && ws.current.readyState === 1) {
             var pcm = encPCM(chunk);
             ws.current.binaryType = "arraybuffer";
-            await ws.current.send(pcm);
+            if (holdMicRef.current) {
+              await ws.current.send(encPCM(Array(2048).fill(0)));
+            } else {
+              await ws.current.send(pcm);
+            }
           }
         }
       });
@@ -442,6 +471,7 @@ const TalkPage = () => {
       // setIsMicOpen(true);
     } catch (err) {
       console.error("Error accessing microphone:", err);
+      throw err;
     }
   };
 
@@ -582,7 +612,7 @@ const TalkPage = () => {
           className="cursor-pointer"
           onClick={inputText ? sendText : connectStt}
         >
-          {inputText ? <SendSvg /> : <MicSvg />}
+          {inputText ? <SendSvg color="#03FFB0" /> : <MicSvg />}
         </div>
       </div>
     );
@@ -593,6 +623,8 @@ const TalkPage = () => {
       <div className="flex flex-row justify-between items-center px-[12px] py-[8px]">
         <Link
           href={getDownloadLink()}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex flex-row justify-center items-center gap-1"
         >
           <LogoSvg width={40} height={40} />
@@ -687,6 +719,13 @@ const TalkPage = () => {
         description="이럴게 아니라 직접 미미콘을 만들어보는건 어때요?"
         cancelText="확인"
         confirmText="만들러가기"
+      />
+      <MicErrorModal
+        isOpen={isMicErrorModalOpen}
+        setIsOpen={setIsMicErrorModalOpen}
+        title="마이크 권한을 확인해주세요"
+        description="마이크 권한을 허용해주셔야 음성 대화가 가능합니다. 브라우저 설정에서 마이크 권한을 확인해주세요."
+        cancelText="확인"
       />
       <Modal
         isOpen={isMaxCountModalOpen}

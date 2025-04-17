@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    Logger.network(">>>>>>>>>>>>>>> REQUEST", config.baseURL + config.url);
+    Logger.network(">>>>>>>>>>>>>>> REQUEST", config.baseURL + config.url, config.data);
     return config;
   },
   (error) => {

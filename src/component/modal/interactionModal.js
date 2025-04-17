@@ -29,9 +29,14 @@ const InterActionModal = ({ isOpen, setIsOpen, onConfirm }) => {
         <div className="flex flex-row gap-2">
           <Link
             href={getDownloadLink()}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex flex-col cursor-pointer rounded-[16px] w-[295px] py-[21px] items-center justify-center text-[16px] font-bold bg-gradient-to-r from-[#00FF94] to-[#00E5CA]"
             onClick={() => {
               setIsOpen(false);
+              if (onConfirm) {
+                onConfirm();
+              }
             }}
           >
             미미콘 앱 다운로드
