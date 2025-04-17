@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 
 const TalkVideoPlayer = ({
@@ -20,9 +20,10 @@ const TalkVideoPlayer = ({
 
   useEffect(() => {
     console.log("=====HELLO ===", type, Hls.isSupported(), videoRef.current.canPlayType("application/vnd.apple.mpegurl"))
-    if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
-      videoRef.current.src = src;
-    } else if (type === "m3u8" && Hls.isSupported()) {
+    // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+    //   videoRef.current.src = src;
+    // } else 
+    if (type === "m3u8" && Hls.isSupported()) {
       // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       //   // This will run in safari, where HLS is supported natively
       //   videoRef.current.src = src;
@@ -62,7 +63,7 @@ const TalkVideoPlayer = ({
       videoRef.current?.removeEventListener("play", _onVideoPlay);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [src]);
+  }, [src, type]);
 
   useEffect(() => {
     videoRef.current.addEventListener("ended", _onVideoEnded);
