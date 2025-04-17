@@ -34,7 +34,7 @@ const TalkVideoPlayer = ({
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
       videoRef.current.autoplay = true;
-      // videoRef.current.play();
+      videoRef.current.play();
     } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       videoRef.current.src = src;
     }
