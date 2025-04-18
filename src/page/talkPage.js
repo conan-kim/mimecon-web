@@ -120,6 +120,7 @@ const TalkPage = () => {
           setIsEndModalOpen(true);
           clearInterval(timer);
         }
+        console.log('remaining time is', prevTime > 0 ? prevTime - 1 : 0)
         return prevTime > 0 ? prevTime - 1 : 0;
       });
     }, 1000);
@@ -157,6 +158,47 @@ const TalkPage = () => {
       setIsAbsenceModalOpen(true);
     }
   }, [isConnected, mimecon, noResponseTime]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        console.log('document is hidden')
+        setStopAll(true);
+      } else {
+        console.log('document is visible')
+        setStopAll(false);
+      }
+    }
+
+    // // 앱이 백그라운드로 갈 때
+    // const handleBlur = () => {
+    //   clearInterval(timer);
+    //   clearInterval(reactTimer);
+    // };
+
+    // // 앱이 포커스를 받을 때
+    // const handleFocus = () => {
+    //   startTimers();
+    // };
+
+    // // 모바일 브라우저에서 페이지를 떠날 때
+    // const handlePageHide = () => {
+    //   clearInterval(timer);
+    //   clearInterval(reactTimer);
+    // };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    // window.addEventListener("blur", handleBlur);
+    // window.addEventListener("focus", handleFocus);
+    // window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      // window.removeEventListener("blur", handleBlur);
+      // window.removeEventListener("focus", handleFocus);
+      // window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, [])
 
   const formatTime = (seconds) => {
     const pad = (num) => String(num).padStart(2, "0");
