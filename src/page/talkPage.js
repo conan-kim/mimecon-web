@@ -120,7 +120,7 @@ const TalkPage = () => {
           setIsEndModalOpen(true);
           clearInterval(timer);
         }
-        console.log('remaining time is', prevTime > 0 ? prevTime - 1 : 0)
+        // console.log('remaining time is', prevTime > 0 ? prevTime - 1 : 0)
         return prevTime > 0 ? prevTime - 1 : 0;
       });
     }, 1000);
@@ -311,7 +311,7 @@ const TalkPage = () => {
     if (stopAll) return;
     if (isLoading) return;
     try {
-      console.log(">>>>>> SEND VOICE")
+      // console.log(">>>>>> SEND VOICE")
       setIsLoading(true);
       holdMicRef.current = true;
       setVoiceStatus(VOICE_STATUS.UPLOADING);
@@ -322,6 +322,7 @@ const TalkPage = () => {
         text: voiceText,
       };
       if (!audioFile || !voiceText) {
+        console.log("audioFile or voiceText is empty")
         setIsLoading(false);
         setVoiceStatus(VOICE_STATUS.LISTENING);
         return;
@@ -363,13 +364,15 @@ const TalkPage = () => {
     // if (holdMicRef.current) {
     //   holdMicRef.current = false;
     // }
-    console.log("onVideoEnded", videoUrl);
+    console.log("onVideoEnded / isIdle?", videoUrl === idleUrl);
     if (videoUrl === idleUrl) {
       return;
     }
+    if (!isLoading) {
+      setVoiceStatus(VOICE_STATUS.LISTENING);
+    }
     setVideoUrl(idleUrl);
     setText("");
-    setVoiceStatus(VOICE_STATUS.LISTENING);
   };
 
   const toggleMic = (bool) => {

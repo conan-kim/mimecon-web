@@ -20,7 +20,6 @@ const TalkVideoPlayer = ({
   const videoRef = useRef();
 
   useEffect(() => {
-    console.log("=====HELLO ===", wait, type, Hls.isSupported(), videoRef.current.canPlayType("application/vnd.apple.mpegurl"))
     // if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
     //   videoRef.current.src = src;
     // } else 
