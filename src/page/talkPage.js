@@ -609,7 +609,7 @@ const TalkPage = () => {
   const renderInput = () => {
     return useVoice ? (
       <div className="flex flex-row rounded-full px-2 py-1 bg-gradient-to-r from-[#03de9d] to-[#05dfc2] text-white">
-        {voiceStatus === VOICE_STATUS.LISTENING ? (
+        {voiceStatus === VOICE_STATUS.LISTENING && !isLoading ? (
           <div className="flex flex-row items-center justify-center pr-[12px]">
             <div className="">
               <Lottie loop animationData={ListenJson} play width={40} />
