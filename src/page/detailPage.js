@@ -215,7 +215,7 @@ const DetailPage = () => {
         <div className="text-white font-bold text-[12px]">
           {isMimecon
             ? data?.mimecon_talk_count
-            : data?.mimecon?.mimecon_like_count ?? "-"}
+            : data?.mimecon?.mimecon_talk_count ?? "-"}
         </div>
       </div>
     );
