@@ -68,9 +68,9 @@ const TalkPage = () => {
   const ws = useRef();
 
   // 오디오 버퍼
-  const bufferSize = 256; // buffer size(512). multiply by two in encPCM function
-  const numChannels = 1; // channel count(only one channel)
-  const sampleRate = 16000; // samplerate
+  const bufferSize = 256;
+  const numChannels = 1;
+  const sampleRate = 16000;
 
   let audioContext;
   let scriptProcessorNode;
@@ -629,15 +629,6 @@ const TalkPage = () => {
           placeholder="메세지 입력"
           onChange={onChange}
           value={inputText}
-          onFocus={() => {
-            // 키보드가 나타날 때 입력 필드가 보이도록 스크롤
-            setTimeout(() => {
-              const inputElement = document.activeElement;
-              if (inputElement) {
-                inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-            }, 100);
-          }}
           onKeyDown={(event) => {
             if (!inputText) return;
             if (event.key === "Enter") {
@@ -691,7 +682,7 @@ const TalkPage = () => {
           </div>
         )}
         {videoUrl && (
-          <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center">
+          <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center mb-[400px]">
             <div className="absolute z-[2] bg-black w-full h-full flex items-center justify-center overflow-hidden">
               <TalkVideoPlayer
                 src={videoUrl}
