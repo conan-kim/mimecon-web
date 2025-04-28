@@ -632,10 +632,10 @@ const TalkPage = () => {
           onFocus={() => {
             // 키보드가 나타날 때 입력 필드가 보이도록 스크롤
             setTimeout(() => {
-              window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-              });
+              const inputElement = document.activeElement;
+              if (inputElement) {
+                inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
             }, 100);
           }}
           onKeyDown={(event) => {
