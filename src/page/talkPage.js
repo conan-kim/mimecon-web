@@ -629,6 +629,15 @@ const TalkPage = () => {
           placeholder="메세지 입력"
           onChange={onChange}
           value={inputText}
+          onFocus={() => {
+            // 키보드가 나타날 때 입력 필드가 보이도록 스크롤
+            setTimeout(() => {
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+              });
+            }, 100);
+          }}
           onKeyDown={(event) => {
             if (!inputText) return;
             if (event.key === "Enter") {
