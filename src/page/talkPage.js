@@ -682,7 +682,7 @@ const TalkPage = () => {
           </div>
         )}
         {videoUrl && (
-          <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center mb-[400px]">
+          <div className="relative flex flex-1 flex-col rounded-t-[20px] w-full h-full justify-between items-center">
             <div className="absolute z-[2] bg-black w-full h-full flex items-center justify-center overflow-hidden">
               <TalkVideoPlayer
                 src={videoUrl}
