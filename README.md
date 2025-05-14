@@ -5,44 +5,25 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Notice that port is 5555 -> http://localhost:5555
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-Web EC2 connect
-
+# Web EC2 connect
 - (DEV) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-13-125-251-28.ap-northeast-2.compute.amazonaws.com
 - (PROD) ssh -i ploonet_lucasai_kr.pem ubuntu@ec2-54-180-94-227.ap-northeast-2.compute.amazonaws.com
-  // 96.45.45.45
-
-su / 0000
-yarn build && pm2 restart 0
-
-yarn dev -- -H 0.0.0.0
-ifconfig | grep "inet " | grep -v 127.0.0.1
+- both, do login with su (Password : 0000)
+```bash
+su
+```
+- get in to the folder
+```bash
+cd mimecon-web
+```
+- update the git, build, run pm2 again
+```bash
+git pull && yarn build && pm2 restart 0
+```
